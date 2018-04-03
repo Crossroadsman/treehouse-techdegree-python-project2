@@ -21,10 +21,24 @@ def rail_fence(plaintext, num_rails=3, strip_punctuation=True):
 
     # Encode plaintext
     rail_number = 0
+    down = True
     for i in range(len(plaintext)):
         print("index: {}, character: {}, rail: {}".format(i, plaintext[i], rail_number))
         rails[rail_number][i] = plaintext[i]
-        rail_number = (rail_number + 1) % num_rails
+        if down:
+            # check if at bottom rail, if so switch to up
+            if rail_number == num_rails:
+                down = False
+                rail_number += 1
+            else:
+                rail_number -= 1
+        else:
+            # check if at top rail, if so switch to down
+            if rail_number == 0:
+                down = True
+                rail_number -= 1
+            else:
+                rail_number += 1
         
     # Flatten text
     # TBD
