@@ -1,5 +1,15 @@
 def rail_fence(plaintext, num_rails=3, grouping=5, strip_punctuation=True):
-    '''Description of cipher goes here
+    '''Cipher where plaintext is written down and up the 'rails' of an
+       imaginary fence.
+       See <https://en.wikipedia.org/wiki/Transposition_cipher#Rail_Fence_cipher>
+       for detailed description of the algorithm and example.
+       This implementation accepts the following arguments:
+       num_rails (default=3) : the number of fence rails
+       grouping  (default=5) : the number of characters in a group (0 to not
+                               break up into groups)
+       strip_punctuation (default=True) : whether to encode just letters
+                               and numbers or whether to encode all
+                               characters (except spaces)
     '''
     
     STRIPPED_CHARACTERS = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
@@ -75,6 +85,10 @@ if __name__ == "__main__":
                                  grouping=3)
     print(groups_of_three)
 
+    ungrouped = rail_fence(plaintext=sample_text,
+                           grouping=0)
+    print(ungrouped)
+ 
     with_punc = rail_fence(plaintext=sample_text,
                            strip_punctuation=False)
     print(with_punc)
