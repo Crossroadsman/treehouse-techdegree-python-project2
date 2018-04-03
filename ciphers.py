@@ -10,6 +10,8 @@ def rail_fence(plaintext, num_rails=3, grouping=5, strip_punctuation=True):
     # Optionally strip punctuation
     if strip_punctuation:
         plaintext = [c for c in plaintext if c.lower() in STRIPPED_CHARACTERS]
+    else: # just strip spaces
+        plaintext = [c for c in plaintext if c.lower() != " "]
 
         
     # Initialise rails
@@ -23,7 +25,7 @@ def rail_fence(plaintext, num_rails=3, grouping=5, strip_punctuation=True):
     rail_number = 0
     down = True
     for i in range(len(plaintext)):
-        print("index: {}, character: {}, rail: {}".format(i, plaintext[i], rail_number))
+        #print("index: {}, character: {}, rail: {}".format(i, plaintext[i], rail_number))
         rails[rail_number][i] = plaintext[i]
         if down:
             # check if at bottom rail, if so switch to up
@@ -49,12 +51,31 @@ def rail_fence(plaintext, num_rails=3, grouping=5, strip_punctuation=True):
     # Group characters
     if grouping > 0:
         grouped = ""
-        for i in range(1, len(ciphertext)):
-            if i % grouping == 0:
+        for i in range(0, len(ciphertext)):
+            if i % grouping == 0 and i != 0:
                grouped += " "
             grouped += ciphertext[i]
         ciphertext = grouped
     
     
-    print(ciphertext)
     return ciphertext
+
+if __name__ == "__main__":
+
+    sample_text = "WE ARE DISCOVERED. FLEE AT ONCE"
+    
+    default = rail_fence(sample_text)
+    print(default)
+
+    four_rails = rail_fence(plaintext=sample_text,
+                            num_rails=4)
+    print(four_rails)
+
+    groups_of_three = rail_fence(plaintext=sample_text,
+                                 grouping=3)
+    print(groups_of_three)
+
+    with_punc = rail_fence(plaintext=sample_text,
+                           strip_punctuation=False)
+    print(with_punc)
+   
