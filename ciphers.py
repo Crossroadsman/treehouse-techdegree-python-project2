@@ -22,6 +22,10 @@ def rail_fence(plaintext, num_rails=3):
     
     # Group characters
     # TBD
+    
+    for rail in rails:
+        for character in rail:
+            print(character)
         
     return rails
     
