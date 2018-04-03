@@ -1,4 +1,4 @@
-def rail_fence(plaintext, num_rails=3, strip_punctuation=True):
+def rail_fence(plaintext, num_rails=3, grouping=5, strip_punctuation=True):
     '''Description of cipher goes here
     '''
     
@@ -9,7 +9,7 @@ def rail_fence(plaintext, num_rails=3, strip_punctuation=True):
     
     # Optionally strip punctuation
     if strip_punctuation:
-        plaintext = [c for c in plaintext if c in STRIPPED_CHARACTERS]
+        plaintext = [c for c in plaintext if c.lower() in STRIPPED_CHARACTERS]
 
         
     # Initialise rails
@@ -27,27 +27,34 @@ def rail_fence(plaintext, num_rails=3, strip_punctuation=True):
         rails[rail_number][i] = plaintext[i]
         if down:
             # check if at bottom rail, if so switch to up
-            if rail_number == num_rails:
+            if rail_number == num_rails -1:
                 down = False
-                rail_number += 1
-            else:
                 rail_number -= 1
+            else:
+                rail_number += 1
         else:
             # check if at top rail, if so switch to down
             if rail_number == 0:
                 down = True
-                rail_number -= 1
-            else:
                 rail_number += 1
+            else:
+                rail_number -= 1
         
     # Flatten text
-    # TBD
+    ciphertext = ""
+    for rail in rails:
+        rail = "".join(rail)
+        ciphertext += rail
     
     # Group characters
-    # TBD
+    if grouping > 0:
+        grouped = ""
+        for i in range(1, len(ciphertext)):
+            if i % grouping == 0:
+               grouped += " "
+            grouped += ciphertext[i]
+        ciphertext = grouped
     
-    for rail in rails:
-        text = "".join(rail)
-        print(text)
-        
-    return rails
+    
+    print(ciphertext)
+    return ciphertext
