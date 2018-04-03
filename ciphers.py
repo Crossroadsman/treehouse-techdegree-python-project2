@@ -14,6 +14,7 @@ def rail_fence(plaintext, num_rails=3):
     # Encode plaintext
     rail_number = 0
     for i in range(len(plaintext)):
+        print("index: {}, character: {}, rail: {}".format(i, plaintext[i], rail_number))
         rails[rail_number][i] = plaintext[i]
         rail_number = (rail_number + 1) % num_rails
         
@@ -24,9 +25,7 @@ def rail_fence(plaintext, num_rails=3):
     # TBD
     
     for rail in rails:
-        for character in rail:
-            print(character)
+        text = "".join(rail)
+        print(text)
         
     return rails
-    
-    
