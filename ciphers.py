@@ -113,5 +113,18 @@ def adfgvx(plaintext, grouping=4):
 
     POLYBIUS_SQUARE = {
         'a': {'a':'n', 'd':'a', 'f':'1', 'g':'c', 'v':'3', 'x':'h'},
-        'd': {
-    # 
+        'd': {'a':'8', 'd':'t', 'f':'b', 'g':'2', 'v':'o', 'x':'m'},
+        'f': {'a':'e', 'd':'5', 'f':'w', 'g':'r', 'v':'p', 'x':'d'},
+        'g': {'a':'4', 'd':'f', 'f':'6', 'g':'g', 'v':'7', 'x':'i'},
+        'v': {'a':'9', 'd':'j', 'f':'0', 'g':'k', 'v':'l', 'x':'q'},
+        'x': {'a':'s', 'd':'u', 'f':'v', 'g':'x', 'v':'y', 'x':'z'},
+    }
+    
+    def encode_character(x):
+        for row, r_val in POLYBIUS_SQUARE.items():
+            for col, c_val in row.items():
+                if x == c_val:
+                    return (row, col)
+        return None
+    
+    
