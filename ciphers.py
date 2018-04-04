@@ -121,6 +121,11 @@ def adfgvx(plaintext, grouping=4):
     }
     
     def encode_character(x):
+        '''takes a single character string and looks for it in the
+           POLYBIUS_SQUARE. if not found, returns None (a separate 
+           dedicated function will clean strings so that only valid characters will be passed into
+           this function)
+        '''
         for row, r_val in POLYBIUS_SQUARE.items():
             for col, c_val in r_val.items():
                 if x == c_val:
@@ -129,3 +134,17 @@ def adfgvx(plaintext, grouping=4):
     
     for character in 'attack at 1200 am':
         print(encode_character(character), end='')
+    print("")
+
+    def decode_character(row,col):
+        '''takes a pair of characters that correspond to a lookup
+           reference in POLYBIUS_SQUARE.
+           e.g., row='a', col='v' would return '3'
+        '''
+        return POLYBIUS_SQUARE[row][col]
+
+    for pair in [('a','d'),('d','d'),('d','d'),('a','d'),('a','g'),('v','g')]:
+        print(decode_character(*pair), end='')
+    print("")
+
+    
