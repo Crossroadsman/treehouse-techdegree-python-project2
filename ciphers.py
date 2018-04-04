@@ -93,3 +93,25 @@ if __name__ == "__main__":
                            strip_punctuation=False)
     print(with_punc)
    
+def adfgvx(plaintext, grouping=4):
+    '''The ADFGVX cipher is a fractionating transposition cipher,
+       combining a Polybius square with a single columnar transposition.
+       For more discussion of the algorithm see:
+       <https://en.wikipedia.org/wiki/ADFGVX_cipher>
+       This implementation has two parameters:
+       `plaintext` (str): the text to encode. Valid characters are 
+                          letters (a-z, case insensitive) and
+                          numbers (0-9).
+    '''
+    
+    # Remove any invalid characters
+    # -----------------------------
+    # TBD
+
+    # Polybius Square
+    # ---------------
+
+    POLYBIUS_SQUARE = {
+        'a': {'a':'n', 'd':'a', 'f':'1', 'g':'c', 'v':'3', 'x':'h'},
+        'd': {
+    # 
