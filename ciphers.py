@@ -122,9 +122,10 @@ def adfgvx(plaintext, grouping=4):
     
     def encode_character(x):
         for row, r_val in POLYBIUS_SQUARE.items():
-            for col, c_val in row.items():
+            for col, c_val in r_val.items():
                 if x == c_val:
                     return (row, col)
         return None
     
-    
+    for character in 'attack at 1200 am':
+        print(encode_character(character), end='')
