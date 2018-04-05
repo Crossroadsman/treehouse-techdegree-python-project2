@@ -120,11 +120,15 @@ def adfgvx(plaintext, keyphrase='PRIVACY', grouping=4):
         return POLYBIUS_SQUARE[row][col]
 
     # make columns using the keyword/phrase
+    print("Keyphrase: {}".format(keyphrase))
     columns = []
     keyphrase_no_duplicates = []
     for character in keyphrase:
+         print(character)
          if character not in keyphrase_no_duplicates:
+             print('not a duplicate, appending')
              keyphrase_no_duplicates.append(character)
+             print(keyphrase_no_duplicates)
 
     for character in keyphrase_no_duplicates:
         # note that strings are effectively lists in Python so we don't
