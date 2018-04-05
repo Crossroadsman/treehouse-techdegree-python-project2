@@ -112,20 +112,12 @@ def adfgvx(plaintext, keyphrase='PRIVACY', grouping=4):
                     return (row, col)
         return None
     
-    for character in 'attack at 1200 am':
-        print(encode_character(character), end='')
-    print("")
-
     def decode_character(row,col):
         '''takes a pair of characters that correspond to a lookup
            reference in POLYBIUS_SQUARE.
            e.g., row='a', col='v' would return '3'
         '''
         return POLYBIUS_SQUARE[row][col]
-
-    for pair in [('a','d'),('d','d'),('d','d'),('a','d'),('a','g'),('v','g')]:
-        print(decode_character(*pair), end='')
-    print("")
 
     # make columns using the keyword/phrase
     columns = []
