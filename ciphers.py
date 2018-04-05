@@ -70,29 +70,7 @@ def rail_fence(plaintext, num_rails=3, grouping=5, strip_punctuation=True):
     
     return ciphertext
 
-if __name__ == "__main__":
 
-    sample_text = "WE ARE DISCOVERED. FLEE AT ONCE"
-    
-    default = rail_fence(sample_text)
-    print(default)
-
-    four_rails = rail_fence(plaintext=sample_text,
-                            num_rails=4)
-    print(four_rails)
-
-    groups_of_three = rail_fence(plaintext=sample_text,
-                                 grouping=3)
-    print(groups_of_three)
-
-    ungrouped = rail_fence(plaintext=sample_text,
-                           grouping=0)
-    print(ungrouped)
- 
-    with_punc = rail_fence(plaintext=sample_text,
-                           strip_punctuation=False)
-    print(with_punc)
-   
 def adfgvx(plaintext, keyphrase='PRIVACY', grouping=4):
     '''The ADFGVX cipher is a fractionating transposition cipher,
        combining a Polybius square with a single columnar transposition.
@@ -185,3 +163,46 @@ def adfgvx(plaintext, keyphrase='PRIVACY', grouping=4):
     # break the string into blocks
     # TBD
     return ciphertext
+
+
+
+
+
+
+
+
+
+
+
+
+# ------------------------------------------------------------------------------------------------
+if __name__ == "__main__":
+    
+    print("RAIL FENCE CIPHER EXAMPLES:")
+    sample_text = "WE ARE DISCOVERED. FLEE AT ONCE"
+    
+    default = rail_fence(sample_text)
+    print(default)
+
+    four_rails = rail_fence(plaintext=sample_text,
+                            num_rails=4)
+    print(four_rails)
+
+    groups_of_three = rail_fence(plaintext=sample_text,
+                                 grouping=3)
+    print(groups_of_three)
+
+    ungrouped = rail_fence(plaintext=sample_text,
+                           grouping=0)
+    print(ungrouped)
+ 
+    with_punc = rail_fence(plaintext=sample_text,
+                           strip_punctuation=False)
+    print(with_punc)
+   
+
+    print("ADFGVX CIPHER EXAMPLES")
+    sample_text = "attack at 1200am"
+    
+    default = afdgvx(sample_text)
+    print(sample_text)
