@@ -204,5 +204,5 @@ if __name__ == "__main__":
     print("ADFGVX CIPHER EXAMPLES")
     sample_text = "attack at 1200am"
     
-    default = afdgvx(sample_text)
+    default = adfgvx(sample_text)
     print(sample_text)
