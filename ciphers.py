@@ -120,6 +120,7 @@ def adfgvx(plaintext, keyphrase='PRIVACY', grouping=4):
         return POLYBIUS_SQUARE[row][col]
 
     # make columns using the keyword/phrase
+    # -- reduce the keyphrase to a list of unique characters (necessary to unambiguously re-order)
     print("Keyphrase: {}".format(keyphrase))
     columns = []
     keyphrase_no_duplicates = []
@@ -129,7 +130,9 @@ def adfgvx(plaintext, keyphrase='PRIVACY', grouping=4):
              print('not a duplicate, appending')
              keyphrase_no_duplicates.append(character)
              print(keyphrase_no_duplicates)
-
+                
+    # -- add the unique keyword characters to the columns
+    print("Constructing columns...")
     for character in keyphrase_no_duplicates:
         # note that strings are effectively lists in Python so we don't
         # strictly need to explicitly put our characters into a list
@@ -137,6 +140,7 @@ def adfgvx(plaintext, keyphrase='PRIVACY', grouping=4):
         # if being read by someone more familiar with languages (e.g., 
         # Swift) where strings are not simply glorified arrays
         columns.append([character.upper()])
+        print(columns)
     
     i = 0
     for character in plaintext:
