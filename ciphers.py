@@ -142,12 +142,18 @@ def adfgvx(plaintext, keyphrase='PRIVACY', grouping=4):
         columns.append([character.upper()])
         print(columns)
     
+    # -- encode the plaintext characters and put the encoded values into the columns
     i = 0
     for character in plaintext:
+        print(character)
         (row, col)  = encode_character(character)
+        print(row)
         columns[i].append(row.lower())
+        print(columns[i])
         i = (i + 1) % len(keyphrase_no_duplicates)
+        print(col)
         columns[i].append(col.lower())
+        print(columns[i])
         i = (i + 1) % len(keyphrase_no_duplicates)
         
 
