@@ -214,4 +214,4 @@ if __name__ == "__main__":
     sample_text = "attackat1200am"
     
     default = adfgvx(sample_text)
-    print(sample_text)
+    print(default)
