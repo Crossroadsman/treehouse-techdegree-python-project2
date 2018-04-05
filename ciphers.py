@@ -93,7 +93,7 @@ if __name__ == "__main__":
                            strip_punctuation=False)
     print(with_punc)
    
-def adfgvx(plaintext, grouping=4):
+def adfgvx(plaintext, keyphrase='PRIVACY', grouping=4):
     '''The ADFGVX cipher is a fractionating transposition cipher,
        combining a Polybius square with a single columnar transposition.
        For more discussion of the algorithm see:
@@ -122,8 +122,10 @@ def adfgvx(plaintext, grouping=4):
     
     def encode_character(x):
         '''takes a single character string and looks for it in the
-           POLYBIUS_SQUARE. if not found, returns None (a separate 
-           dedicated function will clean strings so that only valid characters will be passed into
+           POLYBIUS_SQUARE. 
+           returns a tuple of (row, col) if found.
+           If not found, returns None (a separate dedicated function will 
+           clean strings so that only valid characters will be passed into
            this function)
         '''
         for row, r_val in POLYBIUS_SQUARE.items():
@@ -147,4 +149,39 @@ def adfgvx(plaintext, grouping=4):
         print(decode_character(*pair), end='')
     print("")
 
+    # make columns using the keyword/phrase
+    columns = []
+    keyphrase_no_duplicates = []
+    for character in keyphrase:
+         if character not in keyphrase_no_duplicates:
+             keyphrase_no_duplicates.append(character)
+
+    for character in keyphrase_no_duplicates:
+        # note that strings are effectively lists in Python so we don't
+        # strictly need to explicitly put our characters into a list
+        # but this approach makes our intent more explicit (especially
+        # if being read by someone more familiar with languages (e.g., 
+        # Swift) where strings are not simply glorified arrays
+        columns.append([character.upper()])
     
+    i = 0
+    for character in plaintext:
+        (row, col)  = encode_character(character)
+        columns[i].append(row.lower())
+        i = (i + 1) % len(keyphrase_no_duplicates)
+        columns[i].append(col.lower())
+        i = (i + 1) % len(keyphrase_no_duplicates)
+        
+
+    # sort the columns alphabetically
+    columns = columns.sort()
+
+    # take the letters from the columns and create a single long string
+    ciphertext = ""
+    for column in columns:
+        for character in column[1:]:
+            ciphertext.append(character)
+
+    # break the string into blocks
+    # TBD
+    return ciphertext
