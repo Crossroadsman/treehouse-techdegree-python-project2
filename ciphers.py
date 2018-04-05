@@ -163,8 +163,8 @@ def adfgvx(plaintext, keyphrase='PRIVACY', grouping=4):
     columns.sort()
     print(columns)
 
-    # take the letters from the columns and create a single long string
-    ciphertext = ""
+    # take the letters from the columns and create a single long list of characters
+    ciphertext = []
     for column in columns:
         for character in column[1:]:
             ciphertext.append(character)
