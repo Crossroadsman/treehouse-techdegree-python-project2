@@ -44,6 +44,7 @@ Permitted Programming Constructs
 - inheritance
 - dunder methods
 - @property
+- types / `isinstance`
 
 
 Forbidden Programming Constructs
