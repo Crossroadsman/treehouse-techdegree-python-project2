@@ -38,6 +38,12 @@ Permitted Programming Constructs
 
 ### Added in Unit2: ###
 
+#### Object-Oriented Python ####
+
+- classes
+- inheritance
+- dunder methods
+- @property
 
 
 Forbidden Programming Constructs
