@@ -45,6 +45,7 @@ Permitted Programming Constructs
 - dunder methods
 - @property
 - types / `isinstance`
+- pseudo-private methods (single leading underscore)/protected methods (double leading underscore)
 
 
 Forbidden Programming Constructs
