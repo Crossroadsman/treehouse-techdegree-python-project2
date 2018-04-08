@@ -47,6 +47,12 @@ Permitted Programming Constructs
 - types / `isinstance`
 - pseudo-private methods (single leading underscore)/protected methods (double leading underscore)
 
+#### Write Better Python ####
+
+- PEP8
+- docstrings
+- pdb
+
 
 Forbidden Programming Constructs
 --------------------------------
