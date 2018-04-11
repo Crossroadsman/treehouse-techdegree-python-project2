@@ -30,7 +30,17 @@ class Transposition(Cipher):
     def decrypt(self, ciphertext):
         '''Takes an encrypted string and returns an decrypted string
         '''
-        pass
+        # ungroup text
+        ungrouped = self._ungroup_text(ciphertext)
+        # restore rails
+        # (construct rails with placeholders)
+        placeholder_text = '?' * len(ungrouped)
+        self._add_plaintext_to_rails(placeholder_text)
+        # put text into rails
+        self._restore_rails(ungrouped)
+        # read back text from rails
+        plaintext = self._get_plaintext_from_rails(len(ciphertext))
+        return plaintext
 
     # Helper methods
     def _initialise_rails(self, plaintext):
@@ -79,6 +89,45 @@ class Transposition(Cipher):
             output += rail
         return output
 
+    def _restore_rails(self, text):
+        '''takes a single line of ciphertext and fills in placeholders
+        in rails
+        '''
+        character_index = 0
+        for rail in self.rails:
+            for rail_index in range(len(rail)):
+                if rail[rail_index] == '?':
+                    rail[rail_index] = text[character_index]
+                    character_index += 1
+
+    def _get_plaintext_from_rails(self, length):
+        '''Go through the rails and pull out the plaintext characters
+        '''
+        plaintext = ""
+        rail_number = 0
+        down = True
+        for i in range(length):
+            # write the i'th character in plaintext to the i'th position
+            # of the current rail
+            plaintext += self.rails[rail_number][i]
+
+            if down:
+                # check if at bottom rail, if so, switch to up
+                if rail_number == self.num_rails - 1:
+                    down = False
+                    rail_number -= 1
+                else:
+                    rail_number += 1
+            else:
+                # check if at top rail, if so, switch to down
+                if rail_number == 0:
+                    down = True
+                    rail_number += 1
+                else:
+                    rail_number -= 1
+
+
+
     def _group_text(self, text):
         '''Splits the long single 'word' of characters into groups of a
         specified size
@@ -92,6 +141,15 @@ class Transposition(Cipher):
             return grouped
         else:
             return text
+
+    def _ungroup_text(self, text):
+        '''Converts a string of groups into a single 'word'
+        '''
+        output = ""
+        for character in text:
+            if character != " ":
+                output += character
+        return output
 
     def _pretty_print_rails(self):
         '''Convenience method for when debugging, displays the text in
