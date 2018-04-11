@@ -18,7 +18,7 @@ class Transposition(Cipher):
         self.grouping = grouping
 
     def encrypt(self, plaintext):
-        plaintext = self._reduce_characters(plaintext)
+        plaintext = self._reduce_characters(plaintext).lower()
         self._initialise_rails(plaintext)
         self._add_plaintext_to_rails(plaintext)
         flattened_text = self._flatten_railtext()
