@@ -1,7 +1,24 @@
 from ciphers import Cipher
 
 class PolybiusSquare(Cipher):
-    '''TBD
+    '''This is a cipher that fractionates plaintext characters in order to
+    represent the text with a smaller set of symbols.
+    For a full discussion with worked example, see:
+    <https://en.wikipedia.org/wiki/Polybius_square>
+
+    The typical variants take the form of 5x5 or 6x6 squares
+    (both modelled here).
+
+    Note that the 5x5 square does not have enough characters to uniquely
+    represent every letter in the English alphabet. Two characters need to
+    be combined, usually 'c' and 'k' or 'i' and 'j'. This means that when
+    decrypting a ciphertext that was encoded with a 5x5 square it is impossible
+    to determine which of the combined characters was used in the original
+    plaintext.
+
+    This implementation makes explicit this uncertainty by representing each
+    occurrence of one of these characters in decoded text with both possible
+    characters enclosed in parens.
     '''
 
     def __init__(self, size=5, shared_character='i', custom_square=None):
@@ -23,6 +40,9 @@ class PolybiusSquare(Cipher):
             self.column_ids = custom_square[column_ids]
             self.row_ids = custom_square[row_ids]
             self.square = custom_square[square]
+            if len(self.square) > 5:
+                self.VALID_CHARACTERS += ['0', '1', '2', '3', '4', '5', '6',
+                    '7', '8', '9']
         else:
             self.column_ids = None
             self.row_ids = None
@@ -31,9 +51,13 @@ class PolybiusSquare(Cipher):
                 self.shared_character = shared_character.lower()
             else:
                 self.shared_character = None
+                self.VALID_CHARACTERS += ['0', '1', '2', '3', '4', '5', '6',
+                    '7', '8', '9']
 
 
     def encrypt(self, plaintext):
+        '''Takes a string and returns an encrypted string
+        '''
         plaintext = self._reduce_characters(plaintext)
         plaintext = self._combine_characters(plaintext)
         ciphertext = []
@@ -42,6 +66,8 @@ class PolybiusSquare(Cipher):
         return ciphertext
 
     def decrypt(self, ciphertext):
+        '''Takes an encrypted string and returns an decrypted string
+        '''
         plaintext = ""
         for (row, col) in ciphertext:
             plaintext += self._decode_character(row, col)
@@ -153,5 +179,28 @@ if __name__ == "__main__":
     print(ciphertext)
 
     print("Decrypting {}".format(ciphertext))
-    plaintext = cipher.decrypt(ciphertext)
+    decrypted = cipher.decrypt(ciphertext)
+    print(decrypted)
+
+    print("Test 2: size 6")
+    cipher = PolybiusSquare(size=6)
+    plaintext += "1234567890"
     print(plaintext)
+
+    ciphertext = cipher.encrypt(plaintext)
+    print(ciphertext)
+
+    print("Decrypting {}".format(ciphertext))
+    decrypted = cipher.decrypt(ciphertext)
+    print(decrypted)
+
+    print("Test 3: size=5, shared_character='c'")
+    cipher = PolybiusSquare(size=5, shared_character='c')
+    plaintext = "Surprisingly few discotheques provide jukeboxes"
+
+    ciphertext = cipher.encrypt(plaintext)
+    print(ciphertext)
+
+    print("Decrypting {}".format(ciphertext))
+    decrypted = cipher.decrypt(ciphertext)
+    print(decrypted)
