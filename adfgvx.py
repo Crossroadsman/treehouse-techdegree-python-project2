@@ -80,15 +80,19 @@ class Adfgvx(Cipher):
         # thus we know that this will be the column with index 4 (i.e, 5th)
         # if we know that 5 is <= number of full columns then we know this
         # is a full column otherwise it is a short column
-
-        # **NOTE** THE FOLLOWING IS WRONG
-        i = 0
-        unique_length = len(self._uniquify_keyphrase(self.keyphrase))
-        for letter in ungrouped_text:
-            sorted_columns[i].append(letter)
-            i = (i + 1) % unique_length
+        unique_keyphrase = self._uniquify_keyphrase(self.keyphrase)
+        character_index = 0
+        for i in range(len(sorted_columns)):
+            letter = sorted_columns[i][0].upper()
+            letter_index_in_keyphrase = unique_keyphrase.index(letter)
+            if letter_index_in_keyphrase + 1 <= number_of_full_columns:
+                characters_to_append = characters_in_full_column
+            else:
+                characters_to_append = characters_in_short_column
+            for j in range(character_index, character_index + characters_to_append):
+                sorted_columns[i].append(ungrouped_text[j])
+            character_index = character_index + characters_to_append
         print('sorted columns: {}'.format(sorted_columns))
-        # **END NOTE**
         
         # unsort the columns
         unsorted_columns = self._unsorter(self.keyphrase, sorted_columns)
