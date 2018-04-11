@@ -39,7 +39,7 @@ class Transposition(Cipher):
         # put text into rails
         self._restore_rails(ungrouped)
         # read back text from rails
-        plaintext = self._get_plaintext_from_rails(len(ciphertext))
+        plaintext = self._get_plaintext_from_rails(len(ungrouped))
         return plaintext
 
     # Helper methods
@@ -125,6 +125,7 @@ class Transposition(Cipher):
                     rail_number += 1
                 else:
                     rail_number -= 1
+        return plaintext
 
 
 
