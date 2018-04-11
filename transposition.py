@@ -127,8 +127,6 @@ class Transposition(Cipher):
                     rail_number -= 1
         return plaintext
 
-
-
     def _group_text(self, text):
         '''Splits the long single 'word' of characters into groups of a
         specified size
