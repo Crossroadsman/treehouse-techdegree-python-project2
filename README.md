@@ -34,7 +34,7 @@ Permitted Programming Constructs
 #### Other ####
 - Python File I/O
 - CSV and JSON in Python
-- Understanding Dunder Main (__main__)
+- Understanding Dunder Main (`__main__`)
 
 ### Added in Unit2: ###
 
