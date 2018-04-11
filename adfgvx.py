@@ -30,7 +30,7 @@ class Adfgvx(Cipher):
         print(self.polybius_text)
         # create keyphrase columns and take each character from the 
         # polybius_text and put it into keyphrase_columns
-        self._create_keyphrase_columns()
+        self._populate_keyphrase_columns()
         # sort the columns alphabetically
         print('sorting keyphrase columns alphabetically')
         self.keyphrase_columns.sort()
@@ -42,13 +42,89 @@ class Adfgvx(Cipher):
         for column in self.keyphrase_columns:
             for character in column[1:]:
                 ciphertext += character
-        
         # perform grouping
         grouped_text = self._group_text(ciphertext)
         return grouped_text
 
     def decrypt(self, ciphertext):
-        pass
+        # ungroup text
+        ungrouped_text = self._ungroup_text(ciphertext)
+        # create sorted columns
+        columns = self._create_columns_with_keyphrase_chars(self.keyphrase)
+        sorted_columns = sorted(columns)
+        
+        # populate columns
+        # (fill each column vertically)
+        # (note, some columns will be shorter than others if ciphertext length
+        # is not a multiple of unique_length)
+        # need to know when repopulating the columns which position each
+        # column will be in once unsorted
+        ciphertext_length = len(ungrouped_text)
+        number_of_columns = len(columns)
+        characters_in_short_column = ciphertext_length // number_of_columns
+        if ciphertext_length / number_of_columns == ciphertext_length // number_of_columns:
+            characters_in_full_column = characters_in_short_column
+        else:
+            characters_in_full_column = characters_in_short_column + 1
+        number_of_full_columns = ((ciphertext_length - 1) % number_of_columns) + 1
+        print("ciphertext length: {}".format(ciphertext_length))
+        print("num of columns: {}".format(number_of_columns))
+        print("characters in short column: {}".format(characters_in_short_column))
+        print("characters in long column: {}".format(characters_in_full_column))
+        print("number of full columns: {}".format(number_of_full_columns))
+
+        # suppose key 'PRIVACY'
+        # when we start populating the first column, 'A', we can get the index
+        # of that value in the string (where all characters are unique)
+        # e.g., unique_text.index('A') --> 4
+        # thus we know that this will be the column with index 4 (i.e, 5th)
+        # if we know that 5 is <= number of full columns then we know this
+        # is a full column otherwise it is a short column
+
+        # **NOTE** THE FOLLOWING IS WRONG
+        i = 0
+        unique_length = len(self._uniquify_keyphrase(self.keyphrase))
+        for letter in ungrouped_text:
+            sorted_columns[i].append(letter)
+            i = (i + 1) % unique_length
+        print('sorted columns: {}'.format(sorted_columns))
+        # **END NOTE**
+        
+        # unsort the columns
+        unsorted_columns = self._unsorter(self.keyphrase, sorted_columns)
+        print('unsorted columns: {}'.format(unsorted_columns))
+        
+        # create pairs from values in columns
+        pairs = []
+        column_index = 0
+        row_index = 1
+        print(unsorted_columns)
+        print("length of ungrouped text: {}".format(ungrouped_text))
+        print("therefore there will be half that number of pairs")
+        print('beginning loop...')
+        while len(pairs) < len(ungrouped_text) / 2:
+            print("pairs: {} is less than half ungrouped text {}".format(len(pairs), len(ungrouped_text)))
+            print("col index: {}, row index: {}".format(column_index, row_index))
+            left = unsorted_columns[column_index][row_index]
+            print('left: {}'.format(left))
+            if column_index + 1 > len(unsorted_columns) - 1:
+                next_value = unsorted_columns[0][row_index + 1]
+            else:
+                next_value = unsorted_columns[column_index + 1][row_index]
+            right = next_value
+            print('right: {}'.format(right))
+            pair = (left, right)
+            print(pair)
+            pairs.append(pair)
+            if column_index + 2 > len(unsorted_columns) - 1:
+                row_index += 1
+            column_index = (column_index + 2) % len(unsorted_columns)
+
+        # decode pairs
+        decoded_text = self.polybius_cipher.decrypt(pairs, use_ids=True)
+        # reconstruct string
+        # prepend
+        print(decoded_text)
 
     # Helper methods
     def _create_polybius_square_cipher(self):
@@ -72,35 +148,73 @@ class Adfgvx(Cipher):
         self.polybius_cipher = PolybiusSquare(custom_square=custom_square)
         print('created cipher: {}'.format(self.polybius_cipher))
 
-    def _create_keyphrase_columns(self):
-        self.keyphrase_columns = []
+    def _populate_keyphrase_columns(self):
+        '''Generates keyphrase columns and then fills each column with the 
+        individual characters from cipher pairs
+        '''
         print('creating keyphrase columns')
-        # 1. reduce the keyphrase to a list of unique characters 
-        # (necessary for subsequent sorting)
-        # e.g., 'PEOPLE' becomes 'PEOL'
-        keyphrase_with_no_duplicates = []
-        for character in self.keyphrase:
-            if character not in keyphrase_with_no_duplicates: # unique so far
-                keyphrase_with_no_duplicates.append(character)
-        print('reduced keyphrase {} to no-duplicates {}'.format(self.keyphrase, keyphrase_with_no_duplicates))
-        # 2. Add the unique keyphrase characters to the columns:
-        # so keyphrase_columns will look like:
-        # [[P],[E],[O],[L]]
-        for character in keyphrase_with_no_duplicates:
-            self.keyphrase_columns.append([character.upper()])
-        print('put keyphrase no duplicate letters into columns: {}'.format(self.keyphrase_columns))
-        # 3. Split the cipher pairs and put each half into the next available 
+        self.keyphrase_columns = self._create_columns_with_keyphrase_chars(self.keyphrase)
+        
+        # Split the cipher pairs and put each half into the next available 
         # column:
         print('putting enciphered text into columns')
         i = 0
+        unique_length = len(self._uniquify_keyphrase(self.keyphrase))
         for character_pair in self.polybius_text:
             self.keyphrase_columns[i].append(character_pair[0])
-            i = (i + 1) % len(keyphrase_with_no_duplicates)
+            i = (i + 1) % unique_length
             self.keyphrase_columns[i].append(character_pair[1])
-            i = (i + 1) % len(keyphrase_with_no_duplicates)
+            i = (i + 1) % unique_length
         print(self.keyphrase_columns)
     
+    def _uniquify_keyphrase(self, keyphrase):
+        '''for the column sorting to work, the characters in the keyphrase
+        must be individually unique (and preserve order)
+        e.g., 'PEOPLE' becomes 'PEOL'
+        '''
+        unique = []
+        for character in keyphrase:
+            if character not in unique:
+                unique.append(character)
+        return unique
 
+    def _create_columns_with_keyphrase_chars(self, keyphrase):
+        '''takes the keyphrase and returns a list of lists where each
+        inner list is the next sequential unique character from the
+        keyphrase.
+        e.g., 'PEOPLE' becomes [['P'],['E'],['O'],['L']]
+        '''
+        unique = self._uniquify_keyphrase(keyphrase)
+        columns = []
+        for character in unique:
+            columns.append([character.upper()])
+        return columns
+    
+    def _unsorter(self, keyphrase, sorted):
+        '''takes a keyphrase of unique values and a list of lists where
+        each inner list has a sorted character from keyphrase as the first
+        element.
+        Returns a new list of lists where each inner list is in the order
+        of the keyphrase
+        '''
+        unsorted = []
+        print('entering outer loop')
+        for letter in keyphrase:
+            print('outer loop value: {}'.format(letter))
+            print('entering inner loop')
+            for i in range(len(sorted)):
+                print('index {} of {}'.format(i, range(len(sorted))))
+                if sorted[i][0].lower() == letter.lower():
+                    print('{} == {}'.format(sorted[i][0], letter))
+                    print('appending column to unsorted')
+                    unsorted.append(sorted[i])
+                    print('removing sorted[i] from sorted')
+                    del sorted[i]
+                    print('breaking out of inner loop')
+                    break
+                else:
+                    print('{} != {}'.format(sorted[i][0], letter))
+        return unsorted
 
 
     # Dunder methods
@@ -123,4 +237,7 @@ if __name__ == "__main__":
     ciphertext = cipher.encrypt(plaintext)
 
     print(ciphertext)
+
+    print('decrypting ciphertext')
+    decoded = cipher.decrypt(ciphertext)
 

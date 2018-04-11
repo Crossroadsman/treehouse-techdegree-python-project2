@@ -70,8 +70,11 @@ class PolybiusSquare(Cipher):
     def decrypt(self, ciphertext, use_ids=False):
         '''Takes an encrypted string and returns an decrypted string
         '''
+        print("Decrypting polybius cipher...")
         plaintext = ""
+        print('entering loop...')
         for (row, col) in ciphertext:
+            print('row: {}, col: {}'.format(row, col))
             plaintext += self._decode_character(row, col, use_ids)
         plaintext = self._replace_unknowns(plaintext)
         return plaintext
