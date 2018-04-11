@@ -181,6 +181,10 @@ if __name__ == "__main__":
     ciphertext = cipher.encrypt(plaintext)
     print(ciphertext)
 
+    print('decrypt {}'.format(ciphertext))
+    plaintext = cipher.decrypt(ciphertext)
+    print("decrypted: {}".format(plaintext))
+
     print("Test 2: Custom number of rails (4)")
     custom_num_rails = 4
     print("Create Transposition Cipher object")
@@ -191,6 +195,10 @@ if __name__ == "__main__":
     print('encrypt plaintext')
     ciphertext = cipher.encrypt(plaintext)
     print(ciphertext)
+
+    print('decrypt {}'.format(ciphertext))
+    plaintext = cipher.decrypt(ciphertext)
+    print("decrypted: {}".format(plaintext))
 
     print("Test 3: custom grouping (4)")
     custom_grouping = 4
@@ -203,6 +211,10 @@ if __name__ == "__main__":
     ciphertext = cipher.encrypt(plaintext)
     print(ciphertext)
 
+    print('decrypt {}'.format(ciphertext))
+    plaintext = cipher.decrypt(ciphertext)
+    print("decrypted: {}".format(plaintext))
+
     print("Test 4: custom grouping (no grouping)")
     custom_grouping = 0
     print("Create Transposition Cipher object")
@@ -213,3 +225,7 @@ if __name__ == "__main__":
     print('encrypt plaintext')
     ciphertext = cipher.encrypt(plaintext)
     print(ciphertext)
+
+    print('decrypt {}'.format(ciphertext))
+    plaintext = cipher.decrypt(ciphertext)
+    print("decrypted: {}".format(plaintext))
