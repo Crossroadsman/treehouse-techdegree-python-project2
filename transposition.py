@@ -18,6 +18,8 @@ class Transposition(Cipher):
         self.grouping = grouping
 
     def encrypt(self, plaintext):
+        '''Takes a string and returns an encrypted string
+        '''
         plaintext = self._reduce_characters(plaintext).lower()
         self._initialise_rails(plaintext)
         self._add_plaintext_to_rails(plaintext)
@@ -26,6 +28,8 @@ class Transposition(Cipher):
         return grouped_text
 
     def decrypt(self, ciphertext):
+        '''Takes an encrypted string and returns an decrypted string
+        '''
         pass
 
     # Helper methods
@@ -67,6 +71,8 @@ class Transposition(Cipher):
                     rail_number -= 1
 
     def _flatten_railtext(self):
+        '''Flattens down the multiple lists of characters into a single string
+        '''
         output = ""
         for rail in self.rails:
             rail = "".join(rail)
@@ -74,6 +80,9 @@ class Transposition(Cipher):
         return output
 
     def _group_text(self, text):
+        '''Splits the long single 'word' of characters into groups of a
+        specified size
+        '''
         if self.grouping > 0:
             grouped = ""
             for i in range(len(text)):
@@ -85,6 +94,9 @@ class Transposition(Cipher):
             return text
 
     def _pretty_print_rails(self):
+        '''Convenience method for when debugging, displays the text in
+        the rails in a readable fashion
+        '''
         print('-' * 50)
         for rail in self.rails:
             print(rail)
@@ -95,6 +107,7 @@ class Transposition(Cipher):
         text = "Transposition (rail fence) Cipher (rails: {}, grouping: {})"
         print(text.format(self.num_rails, self.grouping))
 
+# -----------------------------------------------------------------
 
 if __name__ == "__main__":
     print("Run tests")
