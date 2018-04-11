@@ -39,9 +39,10 @@ class PolybiusSquare(Cipher):
             raise ValueError(error_text)
 
         if custom_square:
-            self.column_ids = custom_square[column_ids]
-            self.row_ids = custom_square[row_ids]
-            self.square = custom_square[square]
+            self.shared_character = shared_character
+            self.column_ids = custom_square['column_ids']
+            self.row_ids = custom_square['row_ids']
+            self.square = custom_square['square']
             if len(self.square) > 5:
                 self.VALID_CHARACTERS += ['0', '1', '2', '3', '4', '5', '6',
                                           '7', '8', '9']

@@ -127,29 +127,6 @@ class Transposition(Cipher):
                     rail_number -= 1
         return plaintext
 
-    def _group_text(self, text):
-        '''Splits the long single 'word' of characters into groups of a
-        specified size
-        '''
-        if self.grouping > 0:
-            grouped = ""
-            for i in range(len(text)):
-                if i % self.grouping == 0 and i != 0:
-                    grouped += " "
-                grouped += text[i]
-            return grouped
-        else:
-            return text
-
-    def _ungroup_text(self, text):
-        '''Converts a string of groups into a single 'word'
-        '''
-        output = ""
-        for character in text:
-            if character != " ":
-                output += character
-        return output
-
     def _pretty_print_rails(self):
         '''Convenience method for when debugging, displays the text in
         the rails in a readable fashion
