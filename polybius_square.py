@@ -1,5 +1,6 @@
 from ciphers import Cipher
 
+
 class PolybiusSquare(Cipher):
     '''This is a cipher that fractionates plaintext characters in order to
     represent the text with a smaller set of symbols.
@@ -23,18 +24,19 @@ class PolybiusSquare(Cipher):
 
     def __init__(self, size=5, shared_character='i', custom_square=None):
         # validation
-        ## size
-        if type(size) != type(5):
+        #   size
+        if not isinstance(size, int):
             raise TypeError("Size must be of type 'int'")
         if size < 5:
             raise ValueError("Size must be at least 5")
         if size > 6:
             raise ValueError("Size must be no larger than 6")
 
-        ## shared_character
+        #   shared_character
         if size == 5 and shared_character.lower() not in ['c', 'k', 'i', 'j']:
-            raise ValueError("Only shared characters of 'i'/'j' or 'c'/'k' are permitted")
-
+            error_text = ("Only shared characters of 'i'/'j' or 'c'/'k' "
+                          "are permitted")
+            raise ValueError(error_text)
 
         if custom_square:
             self.column_ids = custom_square[column_ids]
@@ -42,7 +44,7 @@ class PolybiusSquare(Cipher):
             self.square = custom_square[square]
             if len(self.square) > 5:
                 self.VALID_CHARACTERS += ['0', '1', '2', '3', '4', '5', '6',
-                    '7', '8', '9']
+                                          '7', '8', '9']
         else:
             self.column_ids = None
             self.row_ids = None
@@ -52,8 +54,7 @@ class PolybiusSquare(Cipher):
             else:
                 self.shared_character = None
                 self.VALID_CHARACTERS += ['0', '1', '2', '3', '4', '5', '6',
-                    '7', '8', '9']
-
+                                          '7', '8', '9']
 
     def encrypt(self, plaintext):
         '''Takes a string and returns an encrypted string
@@ -74,9 +75,6 @@ class PolybiusSquare(Cipher):
         plaintext = self._replace_unknowns(plaintext)
         return plaintext
 
-
-
-
     # Helper methods
     def _generate_square(self, size=5, shared_character='i'):
         '''Creates the polybius_square based on the specified inputs
@@ -92,7 +90,7 @@ class PolybiusSquare(Cipher):
                     ['q', 'r', 's', 't', 'u'],
                     ['v', 'w', 'x', 'y', 'z'],
                 ]
-            else: # 'c'/'k'
+            else:  # 'c'/'k'
                 return [
                     ['a', 'b', '?', 'd', 'e'],
                     ['f', 'g', 'h', 'i', 'j'],
@@ -100,7 +98,7 @@ class PolybiusSquare(Cipher):
                     ['q', 'r', 's', 't', 'u'],
                     ['v', 'w', 'x', 'y', 'z'],
                 ]
-        else: # size == 6
+        else:  # size == 6
             return [
                 ['a', 'b', 'c', 'd', 'e', 'f'],
                 ['g', 'h', 'i', 'j', 'k', 'l'],
@@ -109,7 +107,7 @@ class PolybiusSquare(Cipher):
                 ['y', 'z', '0', '1', '2', '3'],
                 ['4', '5', '6', '7', '8', '9'],
             ]
-    
+
     def _encode_character(self, char):
         '''takes a string containing a single character and looks for it in
         self.square.
@@ -121,10 +119,11 @@ class PolybiusSquare(Cipher):
         for row_index in range(len(self.square)):
             for col_index in range(len(self.square[row_index])):
                 if char.lower() == self.square[row_index][col_index]:
-                    if self.column_ids == None or self.row_ids == None:
+                    if self.column_ids is None or self.row_ids is None:
                         return (row_index, col_index)
                     else:
-                        return (self.row_ids[row_index], self.column_ids[col_index])
+                        return (self.row_ids[row_index],
+                                self.column_ids[col_index])
         return None
 
     def _decode_character(self, row, col, use_ids=False):
@@ -133,7 +132,7 @@ class PolybiusSquare(Cipher):
         Custom squares (e.g., ADFGVX) use named row and col ids, which can
         be handled by passing in the names of the row and column and setting
         use_ids to True
-        ''' 
+        '''
         if use_ids:
             row_index = self.row_ids.index(row)
             col_index = self.column_ids.index(col)
@@ -144,7 +143,7 @@ class PolybiusSquare(Cipher):
 
     def _combine_characters(self, plaintext):
         '''During the encoding process, we need to substitute each occurrence
-        of one of the characters that will be combined with a ? (if using a 
+        of one of the characters that will be combined with a ? (if using a
         5x5 square)
         '''
         sub_pool = []
@@ -181,7 +180,7 @@ class PolybiusSquare(Cipher):
             else:
                 replaced += character
         return replaced
-    
+
 # -----------------------------------------------------------------
 
 if __name__ == "__main__":
