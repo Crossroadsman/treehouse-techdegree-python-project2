@@ -65,12 +65,12 @@ class PolybiusSquare(Cipher):
             ciphertext.append(self._encode_character(character))
         return ciphertext
 
-    def decrypt(self, ciphertext):
+    def decrypt(self, ciphertext, use_ids=False):
         '''Takes an encrypted string and returns an decrypted string
         '''
         plaintext = ""
         for (row, col) in ciphertext:
-            plaintext += self._decode_character(row, col)
+            plaintext += self._decode_character(row, col, use_ids)
         plaintext = self._replace_unknowns(plaintext)
         return plaintext
 
@@ -79,6 +79,10 @@ class PolybiusSquare(Cipher):
 
     # Helper methods
     def _generate_square(self, size=5, shared_character='i'):
+        '''Creates the polybius_square based on the specified inputs
+        (whether to make it 5x5 or 6x6, and which characters to combine for
+        5x5 variants)
+        '''
         if size == 5:
             if shared_character.lower() in ['i', 'j']:
                 return [
@@ -124,6 +128,12 @@ class PolybiusSquare(Cipher):
         return None
 
     def _decode_character(self, row, col, use_ids=False):
+        '''Takes a reference to a row and col address and determines what
+        character should be represented.
+        Custom squares (e.g., ADFGVX) use named row and col ids, which can
+        be handled by passing in the names of the row and column and setting
+        use_ids to True
+        ''' 
         if use_ids:
             row_index = self.row_ids.index(row)
             col_index = self.column_ids.index(col)
@@ -133,6 +143,10 @@ class PolybiusSquare(Cipher):
         return self.square[row_index][col_index]
 
     def _combine_characters(self, plaintext):
+        '''During the encoding process, we need to substitute each occurrence
+        of one of the characters that will be combined with a ? (if using a 
+        5x5 square)
+        '''
         sub_pool = []
         if self.shared_character in ['i', 'j']:
             sub_pool = ['i', 'j']
@@ -151,6 +165,9 @@ class PolybiusSquare(Cipher):
         return combined_plaintext
 
     def _replace_unknowns(self, plaintext):
+        '''During the decoding process, we need to replace each occurrence of
+        ? with the possible value pair (if using 5x5 square)
+        '''
         if self.shared_character in ['i', 'j']:
             substitute = '(i/j)'
         elif self.shared_character in ['c', 'k']:
