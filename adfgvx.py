@@ -16,28 +16,21 @@ class Adfgvx(Cipher):
     def __init__(self, keyphrase='PRIVACY', grouping=5):
         self.keyphrase = keyphrase
         self.grouping = grouping
-        print('initialising ADFGVX cipher with keyphrase: {} and grouping: {}'.format(keyphrase, grouping))
         self._create_polybius_square_cipher()
         
         
     def encrypt(self, plaintext):
         '''Takes a string and returns an encrypted string
         '''
-        print("encrypting {}".format(plaintext))
         # get the (A,D) (F,G) etc ciphertext using the custom polybius
-        print("creating polybius text using custom square")
         self.polybius_text = self.polybius_cipher.encrypt(plaintext)
-        print(self.polybius_text)
         # create keyphrase columns and take each character from the 
         # polybius_text and put it into keyphrase_columns
         self._populate_keyphrase_columns()
         # sort the columns alphabetically
-        print('sorting keyphrase columns alphabetically')
         self.keyphrase_columns.sort()
-        print(self.keyphrase_columns)
         # take the letters from the columns and create a single long list
         # of characters
-        print('taking each of the column characters and putting into ciphertext string')
         ciphertext = ""
         for column in self.keyphrase_columns:
             for character in column[1:]:
@@ -67,11 +60,6 @@ class Adfgvx(Cipher):
         else:
             characters_in_full_column = characters_in_short_column + 1
         number_of_full_columns = ((ciphertext_length - 1) % number_of_columns) + 1
-        print("ciphertext length: {}".format(ciphertext_length))
-        print("num of columns: {}".format(number_of_columns))
-        print("characters in short column: {}".format(characters_in_short_column))
-        print("characters in long column: {}".format(characters_in_full_column))
-        print("number of full columns: {}".format(number_of_full_columns))
 
         # suppose key 'PRIVACY'
         # when we start populating the first column, 'A', we can get the index
@@ -92,31 +80,21 @@ class Adfgvx(Cipher):
             for j in range(character_index, character_index + characters_to_append):
                 sorted_columns[i].append(ungrouped_text[j])
             character_index = character_index + characters_to_append
-        print('sorted columns: {}'.format(sorted_columns))
         
         # unsort the columns
         unsorted_columns = self._unsorter(self.keyphrase, sorted_columns)
-        print('unsorted columns: {}'.format(unsorted_columns))
         
         # create pairs from values in columns
         pairs = []
         column_index = 0
         row_index = 1
-        print(unsorted_columns)
-        print("length of ungrouped text: {}".format(ungrouped_text))
-        print("therefore there will be half that number of pairs")
-        print('beginning loop...')
         while len(pairs) < len(ungrouped_text) / 2:
-            print("pairs: {} is less than half ungrouped text {}".format(len(pairs), len(ungrouped_text)))
-            print("col index: {}, row index: {}".format(column_index, row_index))
             left = unsorted_columns[column_index][row_index]
-            print('left: {}'.format(left))
             if column_index + 1 > len(unsorted_columns) - 1:
                 next_value = unsorted_columns[0][row_index + 1]
             else:
                 next_value = unsorted_columns[column_index + 1][row_index]
             right = next_value
-            print('right: {}'.format(right))
             pair = (left, right)
             print(pair)
             pairs.append(pair)
@@ -148,20 +126,16 @@ class Adfgvx(Cipher):
         custom_square = {'column_ids': col_ids,
                          'row_ids': row_ids,
                          'square': square_values}
-        print('creating polybius cipher with custom values: {}'.format(custom_square))
         self.polybius_cipher = PolybiusSquare(custom_square=custom_square)
-        print('created cipher: {}'.format(self.polybius_cipher))
 
     def _populate_keyphrase_columns(self):
         '''Generates keyphrase columns and then fills each column with the 
         individual characters from cipher pairs
         '''
-        print('creating keyphrase columns')
         self.keyphrase_columns = self._create_columns_with_keyphrase_chars(self.keyphrase)
         
         # Split the cipher pairs and put each half into the next available 
         # column:
-        print('putting enciphered text into columns')
         i = 0
         unique_length = len(self._uniquify_keyphrase(self.keyphrase))
         for character_pair in self.polybius_text:
@@ -169,7 +143,6 @@ class Adfgvx(Cipher):
             i = (i + 1) % unique_length
             self.keyphrase_columns[i].append(character_pair[1])
             i = (i + 1) % unique_length
-        print(self.keyphrase_columns)
     
     def _uniquify_keyphrase(self, keyphrase):
         '''for the column sorting to work, the characters in the keyphrase
@@ -202,22 +175,12 @@ class Adfgvx(Cipher):
         of the keyphrase
         '''
         unsorted = []
-        print('entering outer loop')
         for letter in keyphrase:
-            print('outer loop value: {}'.format(letter))
-            print('entering inner loop')
             for i in range(len(sorted)):
-                print('index {} of {}'.format(i, range(len(sorted))))
                 if sorted[i][0].lower() == letter.lower():
-                    print('{} == {}'.format(sorted[i][0], letter))
-                    print('appending column to unsorted')
                     unsorted.append(sorted[i])
-                    print('removing sorted[i] from sorted')
                     del sorted[i]
-                    print('breaking out of inner loop')
                     break
-                else:
-                    print('{} != {}'.format(sorted[i][0], letter))
         return unsorted
 
 
@@ -230,11 +193,56 @@ class Adfgvx(Cipher):
 if __name__ == "__main__":
     print("Run tests")
 
-    print("Create ADFGVX Cipher object (with defaults)")
+    print("Test 1: Create ADFGVX Cipher object (with defaults)")
     cipher = Adfgvx()
 
     print('create plaintext')
     plaintext = 'Attack at 12:00 AM'
+    print(plaintext)
+
+    print('encrypt plaintext')
+    ciphertext = cipher.encrypt(plaintext)
+
+    print(ciphertext)
+
+    print('decrypting ciphertext')
+    decoded = cipher.decrypt(ciphertext)
+
+    print("Test 2: Create ADFGVX Cipher object (with defaults and non-multiple plaintext)")
+    cipher = Adfgvx()
+
+    print('create plaintext')
+    plaintext = 'We attack at 12:00 AM'
+    print(plaintext)
+
+    print('encrypt plaintext')
+    ciphertext = cipher.encrypt(plaintext)
+
+    print(ciphertext)
+
+    print('decrypting ciphertext')
+    decoded = cipher.decrypt(ciphertext)
+
+    print("Test 3: Create ADFGVX Cipher object (with custom key)")
+    cipher = Adfgvx(keyphrase='HAS REPEATS')
+
+    print('create plaintext')
+    plaintext = 'We attack at 12:00 AM'
+    print(plaintext)
+
+    print('encrypt plaintext')
+    ciphertext = cipher.encrypt(plaintext)
+
+    print(ciphertext)
+
+    print('decrypting ciphertext')
+    decoded = cipher.decrypt(ciphertext)
+
+    print("Test 4: Create ADFGVX Cipher object (with custom grouping)")
+    cipher = Adfgvx(grouping=4)
+
+    print('create plaintext')
+    plaintext = 'We attack at 12:00 AM'
     print(plaintext)
 
     print('encrypt plaintext')
