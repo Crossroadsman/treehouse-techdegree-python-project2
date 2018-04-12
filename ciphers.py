@@ -39,3 +39,14 @@ class Cipher:
             if character != " ":
                 output += character
         return output
+    
+    def _uniquify_keyphrase(self, keyphrase):
+        '''for the column sorting to work, the characters in the keyphrase
+        must be individually unique (and preserve order)
+        e.g., 'PEOPLE' becomes 'PEOL'
+        '''
+        unique = []
+        for character in keyphrase:
+            if character not in unique:
+                unique.append(character)
+        return unique
