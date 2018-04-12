@@ -12,7 +12,7 @@ class Adfgvx(Cipher):
     This implementation has the following options:
     - keyphrase (default='PRIVACY'): the keyphrase to use for column
       transposition
-    - grouping (default=4): the number of characters in a group (choose 0 to
+    - grouping (default=5): the number of characters in a group (choose 0 to
                             not implement grouping)
     '''
     def __init__(self, keyphrase='PRIVACY', grouping=5):
@@ -105,9 +105,7 @@ class Adfgvx(Cipher):
 
         # decode pairs
         decoded_text = self.polybius_cipher.decrypt(pairs, use_ids=True)
-        # reconstruct string
-        # prepend
-        print(decoded_text)
+        return(decoded_text)
 
     # Helper methods
     def _create_polybius_square_cipher(self):
@@ -208,6 +206,7 @@ if __name__ == "__main__":
 
     print('decrypting ciphertext')
     decoded = cipher.decrypt(ciphertext)
+    print(decoded)
 
     print("Test 2: Create ADFGVX Cipher object")
     print("with defaults and non-multiple plaintext)")
@@ -224,6 +223,7 @@ if __name__ == "__main__":
 
     print('decrypting ciphertext')
     decoded = cipher.decrypt(ciphertext)
+    print(decoded)
 
     print("Test 3: Create ADFGVX Cipher object (with custom key)")
     cipher = Adfgvx(keyphrase='HAS REPEATS')
@@ -239,6 +239,7 @@ if __name__ == "__main__":
 
     print('decrypting ciphertext')
     decoded = cipher.decrypt(ciphertext)
+    print(decoded)
 
     print("Test 4: Create ADFGVX Cipher object (with custom grouping)")
     cipher = Adfgvx(grouping=4)
@@ -254,3 +255,4 @@ if __name__ == "__main__":
 
     print('decrypting ciphertext')
     decoded = cipher.decrypt(ciphertext)
+    print(decoded)
