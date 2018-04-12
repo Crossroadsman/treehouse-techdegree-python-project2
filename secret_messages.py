@@ -1,0 +1,10 @@
+print("This is the Secret Messages project for the Treehouse Techdegree\n")
+print("These are the current available ciphers:\n")
+print("-[C]aesar")
+print("-[T]ransposition")
+print("-[A]DFGVX")
+print("-[P]olybius Square")
+print("-[K]eyword")
+cipher_choice = input("Which cipher would you like to use? ").lower()
+print("|{}|".format(cipher_choice))
+
