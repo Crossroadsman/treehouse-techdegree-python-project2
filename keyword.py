@@ -50,7 +50,7 @@ class Keyword(Cipher):
         for character in ungrouped_text:
             plaintext += character_map[character]
 
-        #return decoded_text
+        # return decoded_text
         return plaintext
 
     # Helper methods
@@ -74,14 +74,14 @@ class Keyword(Cipher):
         return keyphrase
 
     def _alphabet_from_keyphrase(self, keyphrase):
-        '''takes a validated keyphrase and creates a full alphabet to be used 
+        '''takes a validated keyphrase and creates a full alphabet to be used
         as the substitution list for the cipher
         '''
         other_characters = self._non_keyphrase_characters(keyphrase)
         other_characters = [char.lower() for char in other_characters]
         substitution_list = keyphrase + other_characters
         return substitution_list
-    
+
     def _map_characters(self, keyphrase, substitution_list):
         '''creates a mapping of each character in VALID_CHARACTERS to
         a character in the substitution_list (which is the reduced keyword
@@ -91,14 +91,13 @@ class Keyword(Cipher):
         for i in range(len(self.VALID_CHARACTERS)):
             character_map[self.VALID_CHARACTERS[i]] = substitution_list[i]
         return character_map
-    
+
     def _invert_dict(self, dictionary):
         '''switches keys and values for a dictionary. For this cipher values
-        in the dictionary will always be unique so will be valid keys on 
+        in the dictionary will always be unique so will be valid keys on
         inversion.
         '''
         return {value: key for key, value in dictionary.items()}
-
 
     # Dunder methods
     def __repr__(self):
@@ -144,7 +143,7 @@ if __name__ == "__main__":
     print(decoded)
 
     print("Test 3: Create Keyword Cipher object (with custom key)")
-    #cipher = Keyword(keyphrase='HAS REPEATS')
+    # cipher = Keyword(keyphrase='HAS REPEATS')
     cipher = Keyword(keyphrase='KRYPTOS')
 
     print('create plaintext')
