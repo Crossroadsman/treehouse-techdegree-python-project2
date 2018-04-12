@@ -16,7 +16,7 @@ class Cipher:
             if character.lower() in self.VALID_CHARACTERS:
                 reduced_text += character
         return reduced_text
-    
+
     def _group_text(self, text):
         '''Splits the long single 'word' of characters into groups of a
         specified size
@@ -38,4 +38,4 @@ class Cipher:
         for character in text:
             if character != " ":
                 output += character
-        return output        
+        return output

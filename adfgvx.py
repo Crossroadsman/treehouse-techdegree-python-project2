@@ -1,15 +1,17 @@
 from ciphers import Cipher
 from polybius_square import PolybiusSquare
 
+
 class Adfgvx(Cipher):
-    '''This is a fractionating transposition cipher, combining a 
+    '''This is a fractionating transposition cipher, combining a
     Polybius square with a single columnar transposition.
-    For a detailed explanation of the algorithm, together with a worked example,
-    see this wikipedia page:
+    For a detailed explanation of the algorithm, together with a worked
+    example, see this wikipedia page:
     <https://en.wikipedia.org/wiki/ADFGVX_cipher>
 
     This implementation has the following options:
-    - keyphrase (default='PRIVACY'): the keyphrase to use for column transposition
+    - keyphrase (default='PRIVACY'): the keyphrase to use for column
+      transposition
     - grouping (default=4): the number of characters in a group (choose 0 to
                             not implement grouping)
     '''
@@ -17,14 +19,13 @@ class Adfgvx(Cipher):
         self.keyphrase = keyphrase
         self.grouping = grouping
         self._create_polybius_square_cipher()
-        
-        
+
     def encrypt(self, plaintext):
         '''Takes a string and returns an encrypted string
         '''
         # get the (A,D) (F,G) etc ciphertext using the custom polybius
         self.polybius_text = self.polybius_cipher.encrypt(plaintext)
-        # create keyphrase columns and take each character from the 
+        # create keyphrase columns and take each character from the
         # polybius_text and put it into keyphrase_columns
         self._populate_keyphrase_columns()
         # sort the columns alphabetically
@@ -43,23 +44,23 @@ class Adfgvx(Cipher):
         # ungroup text
         ungrouped_text = self._ungroup_text(ciphertext)
         # create sorted columns
-        columns = self._create_columns_with_keyphrase_chars(self.keyphrase)
+        columns = self._create_cols_kp_chars(self.keyphrase)
         sorted_columns = sorted(columns)
-        
+
         # populate columns
         # (fill each column vertically)
         # (note, some columns will be shorter than others if ciphertext length
         # is not a multiple of unique_length)
         # need to know when repopulating the columns which position each
         # column will be in once unsorted
-        ciphertext_length = len(ungrouped_text)
+        text_length = len(ungrouped_text)
         number_of_columns = len(columns)
-        characters_in_short_column = ciphertext_length // number_of_columns
-        if ciphertext_length / number_of_columns == ciphertext_length // number_of_columns:
+        characters_in_short_column = text_length // number_of_columns
+        if text_length / number_of_columns == text_length // number_of_columns:
             characters_in_full_column = characters_in_short_column
         else:
             characters_in_full_column = characters_in_short_column + 1
-        number_of_full_columns = ((ciphertext_length - 1) % number_of_columns) + 1
+        number_of_full_columns = ((text_length - 1) % number_of_columns) + 1
 
         # suppose key 'PRIVACY'
         # when we start populating the first column, 'A', we can get the index
@@ -69,7 +70,7 @@ class Adfgvx(Cipher):
         # if we know that 5 is <= number of full columns then we know this
         # is a full column otherwise it is a short column
         unique_keyphrase = self._uniquify_keyphrase(self.keyphrase)
-        character_index = 0
+        char_index = 0
         for i in range(len(sorted_columns)):
             letter = sorted_columns[i][0].upper()
             letter_index_in_keyphrase = unique_keyphrase.index(letter)
@@ -77,13 +78,13 @@ class Adfgvx(Cipher):
                 characters_to_append = characters_in_full_column
             else:
                 characters_to_append = characters_in_short_column
-            for j in range(character_index, character_index + characters_to_append):
+            for j in range(char_index, char_index + characters_to_append):
                 sorted_columns[i].append(ungrouped_text[j])
-            character_index = character_index + characters_to_append
-        
+            char_index = char_index + characters_to_append
+
         # unsort the columns
         unsorted_columns = self._unsorter(self.keyphrase, sorted_columns)
-        
+
         # create pairs from values in columns
         pairs = []
         column_index = 0
@@ -113,7 +114,7 @@ class Adfgvx(Cipher):
         '''Specifies the charateristics for the custom polybius square
         and then creates a PolybiusSquare instance with those inputs
         '''
-        row_ids = ['A','D','F','G','V','X']
+        row_ids = ['A', 'D', 'F', 'G', 'V', 'X']
         col_ids = row_ids
         square_values = [
             ['n', 'a', '1', 'c', '3', 'h'],
@@ -129,12 +130,12 @@ class Adfgvx(Cipher):
         self.polybius_cipher = PolybiusSquare(custom_square=custom_square)
 
     def _populate_keyphrase_columns(self):
-        '''Generates keyphrase columns and then fills each column with the 
+        '''Generates keyphrase columns and then fills each column with the
         individual characters from cipher pairs
         '''
-        self.keyphrase_columns = self._create_columns_with_keyphrase_chars(self.keyphrase)
-        
-        # Split the cipher pairs and put each half into the next available 
+        self.keyphrase_columns = self._create_cols_kp_chars(self.keyphrase)
+
+        # Split the cipher pairs and put each half into the next available
         # column:
         i = 0
         unique_length = len(self._uniquify_keyphrase(self.keyphrase))
@@ -143,7 +144,7 @@ class Adfgvx(Cipher):
             i = (i + 1) % unique_length
             self.keyphrase_columns[i].append(character_pair[1])
             i = (i + 1) % unique_length
-    
+
     def _uniquify_keyphrase(self, keyphrase):
         '''for the column sorting to work, the characters in the keyphrase
         must be individually unique (and preserve order)
@@ -155,7 +156,7 @@ class Adfgvx(Cipher):
                 unique.append(character)
         return unique
 
-    def _create_columns_with_keyphrase_chars(self, keyphrase):
+    def _create_cols_kp_chars(self, keyphrase):
         '''takes the keyphrase and returns a list of lists where each
         inner list is the next sequential unique character from the
         keyphrase.
@@ -166,7 +167,7 @@ class Adfgvx(Cipher):
         for character in unique:
             columns.append([character.upper()])
         return columns
-    
+
     def _unsorter(self, keyphrase, sorted):
         '''takes a keyphrase of unique values and a list of lists where
         each inner list has a sorted character from keyphrase as the first
@@ -183,10 +184,10 @@ class Adfgvx(Cipher):
                     break
         return unsorted
 
-
     # Dunder methods
     def __repr__(self):
-        print("ADFGVX Cipher (keyphrase: {}, grouping: {})".format(self.keyphrase, self.grouping))
+        text = "ADFGVX Cipher (keyphrase: {}, grouping: {})"
+        print(text.format(self.keyphrase, self.grouping))
 
 # ----------------------------------------------------------------------
 
@@ -208,7 +209,8 @@ if __name__ == "__main__":
     print('decrypting ciphertext')
     decoded = cipher.decrypt(ciphertext)
 
-    print("Test 2: Create ADFGVX Cipher object (with defaults and non-multiple plaintext)")
+    print("Test 2: Create ADFGVX Cipher object")
+    print("with defaults and non-multiple plaintext)")
     cipher = Adfgvx()
 
     print('create plaintext')
@@ -252,4 +254,3 @@ if __name__ == "__main__":
 
     print('decrypting ciphertext')
     decoded = cipher.decrypt(ciphertext)
-
