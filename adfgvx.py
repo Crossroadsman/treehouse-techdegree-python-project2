@@ -41,6 +41,8 @@ class Adfgvx(Cipher):
         return grouped_text
 
     def decrypt(self, ciphertext):
+        '''Takes an encrypted string and returns an decrypted string
+        '''
         # ungroup text
         ungrouped_text = self._ungroup_text(ciphertext)
         # create sorted columns
