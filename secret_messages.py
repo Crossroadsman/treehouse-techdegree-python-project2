@@ -1,17 +1,3 @@
-# Constants
-
-VALID_CIPHERS = {
-    'c': 'Caesar', 
-    't': 'Transposition', 
-    'a': 'ADFGVX', 
-    'p': 'Polybius Square', 
-    'k': 'Keyword',
-}
-VALID_ACTIVITIES = {
-    'e': 'encrypt',
-    'd': 'decrypt',
-}
-
 # Functions
 
 def select_cipher():
@@ -21,7 +7,7 @@ def select_cipher():
     print("These are the current available ciphers:\n")
     for key, value in VALID_CIPHERS.items():
         shortcut = "[" + key.upper() + "]"
-        remainder = value[1:].lower()
+        remainder = value['name'][1:].lower()
         print(shortcut + remainder)
 
     cipher_choice = input("Which cipher would you like to use? ").lower()
@@ -32,7 +18,7 @@ def select_cipher():
             print(letter)
         cipher_choice = input("Which cipher would you like to use? ").lower()
     
-    return cipher_choice
+    return VALID_CIPHERS[cipher_choice]
 
 def get_plaintext():
     '''get the input text from the user
@@ -113,6 +99,51 @@ def validate_pad(pad_numbers, min_length):
         error = None
     return {'error': error,
             'pad_numbers': pad_numbers}
+    
+# Functions: Cipher Arguments
+def offset():
+    offset_value = int(input('offset value'))
+    return ('offset', offset_value)
+
+def num_rails():
+    rails = int(input('number of rails'))
+    return ('num_rails', rails)
+
+def grouping():
+    group = int(input('characters to group by (0 to not group)'))
+    return ('grouping', group)
+
+def keyphrase():
+    phrase = input('keyphrase')
+    return ('keyphrase', phrase)
+
+def size():
+    grid = int(input('Square size (valid values are 5 or 6)'))
+    return ('size', grid)
+
+def shared_character():
+    character = input('Shared character (valid values are "c", "k", "i", "j")')
+    return ('shared_character', character)
+
+# Constants
+
+VALID_CIPHERS = {
+    'c': {'name': 'Caesar',
+          'parameters': [offset]},
+    't': {'name': 'Transposition',
+          'parameters': [num_rails, grouping]},
+    'a': {'name': 'ADFGVX',
+          'parameters': [num_rails, grouping]},
+    'p': {'name': 'Polybius Square',
+          'parameters': [size, shared_character]},
+    'k': {'name': 'Keyword',
+          'parameters': [keyphrase, grouping]},
+}
+VALID_ACTIVITIES = {
+    'e': 'encrypt',
+    'd': 'decrypt',
+}
+
 
 
 
@@ -124,6 +155,11 @@ if __name__ == "__main__":
     plaintext = get_plaintext()
     process = select_process()
     pad_numbers = create_one_time_pad(plaintext)
+    arguments = {}
+    for function in cipher['parameters']:
+        key, value = function()
+        arguments[key] = value
+
 
     print("You selected to {}, using {} cipher, with {} text and {} pad".format(
         process,
@@ -131,4 +167,7 @@ if __name__ == "__main__":
         plaintext,
         pad_numbers
     ))
+
+    print("Your arguments are:")
+    print(arguments)
 
