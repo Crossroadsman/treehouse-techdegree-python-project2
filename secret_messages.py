@@ -1,5 +1,11 @@
-# Functions
+from keyword_cipher import Keyword
+from caesar import Caesar
+from transposition import Transposition
+from adfgvx import Adfgvx
+from polybius_square import PolybiusSquare
 
+
+# Functions
 def select_cipher():
     '''ask the user to select a cipher from the available list
     '''
@@ -129,14 +135,19 @@ def shared_character():
 
 VALID_CIPHERS = {
     'c': {'name': 'Caesar',
+          'class': Caesar,
           'parameters': [offset]},
     't': {'name': 'Transposition',
+          'class': Transposition,
           'parameters': [num_rails, grouping]},
     'a': {'name': 'ADFGVX',
+          'class': Adfgvx,
           'parameters': [num_rails, grouping]},
     'p': {'name': 'Polybius Square',
+          'class': PolybiusSquare,
           'parameters': [size, shared_character]},
     'k': {'name': 'Keyword',
+          'class': Keyword,
           'parameters': [keyphrase, grouping]},
 }
 VALID_ACTIVITIES = {
@@ -150,24 +161,33 @@ VALID_ACTIVITIES = {
 # ---------------------------------------------------------------
 
 if __name__ == "__main__":
-
-    cipher = select_cipher()
-    plaintext = get_plaintext()
+    
+    cipher_id = select_cipher()
+    text = get_plaintext()
     process = select_process()
-    pad_numbers = create_one_time_pad(plaintext)
+    pad_numbers = create_one_time_pad(text)
     arguments = {}
-    for function in cipher['parameters']:
+    for function in cipher_id['parameters']:
         key, value = function()
         arguments[key] = value
 
 
     print("You selected to {}, using {} cipher, with {} text and {} pad".format(
         process,
-        cipher,
-        plaintext,
+        cipher_id,
+        text,
         pad_numbers
     ))
 
     print("Your arguments are:")
     print(arguments)
+
+    cipher = cipher_id['class'](**arguments)
+
+    if process == 'e':
+        processed_text = cipher.encrypt(text)
+    else: # process == 'd'
+        processed_text = cipher.decrypt(text)
+    
+    print(processed_text)
 
