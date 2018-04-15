@@ -23,14 +23,16 @@ def select_cipher():
         for letter in VALID_CIPHERS.keys():
             print(letter)
         cipher_choice = input("Which cipher would you like to use? ").lower()
-    
+
     return VALID_CIPHERS[cipher_choice]
+
 
 def get_plaintext():
     '''get the input text from the user
     '''
     plaintext = input("\nThat's an excellent cipher. What's the message? ")
     return plaintext
+
 
 def select_process():
     '''decide whether to encrypt or decrypt
@@ -49,6 +51,7 @@ def select_process():
             print(letter)
         process = input("Which process do you want to use? ")
     return process
+
 
 def create_one_time_pad(plaintext):
     '''ask the user if they want to use a one-time pad.
@@ -70,6 +73,7 @@ def create_one_time_pad(plaintext):
         validated = validate_pad(pad_numbers, len(plaintext))
     return validated['pad_numbers']
 
+
 def validate_pad(pad_numbers, min_length):
     '''takes a user-supplied prospective one-time pad and determines its
     validity.
@@ -85,10 +89,10 @@ def validate_pad(pad_numbers, min_length):
         pad_numbers = None
         return {'error': error,
                 'pad_numbers': pad_numbers}
-        
+
     # turn comma-separated into list of values
     pad_numbers = pad_numbers.split(',')
-    
+
     # try to convert the list elements into ints
     try:
         pad_numbers = [int(element) for element in pad_numbers]
@@ -97,7 +101,7 @@ def validate_pad(pad_numbers, min_length):
         pad_numbers = None
         return {'error': error,
                 'pad_numbers': pad_numbers}
-    
+
     # check the length is sufficient
     if len(pad_numbers) < min_length:
         error = 'Too short, pad must be at least as long as plaintext'
@@ -106,35 +110,41 @@ def validate_pad(pad_numbers, min_length):
         error = None
     return {'error': error,
             'pad_numbers': pad_numbers}
-    
+
+
 # Functions: Cipher Arguments
 def offset():
     offset_value = int(input('\nChoose an offset value '))
     return ('offset', offset_value)
 
+
 def num_rails():
     rails = int(input('\nChoose the number of rails '))
     return ('num_rails', rails)
+
 
 def grouping():
     group = int(input('\nHow many characters to group by (0 to not group) '))
     return ('grouping', group)
 
+
 def keyphrase():
     phrase = input('\nChoose a keyphrase ')
     return ('keyphrase', phrase)
 
+
 def size():
     grid = int(input('\n Choose a square size (valid values are 5 or 6) '))
     return ('size', grid)
+
 
 def shared_character():
     print("\nChoose a shared character")
     character = input('(valid values are: "c", "k", "i", "j") ')
     return ('shared_character', character)
 
-# Constants
 
+# Constants
 VALID_CIPHERS = {
     'c': {'name': 'Caesar',
           'class': Caesar,
@@ -156,9 +166,6 @@ VALID_ACTIVITIES = {
     'e': 'encrypt',
     'd': 'decrypt',
 }
-
-
-
 
 # ---------------------------------------------------------------
 
@@ -183,14 +190,13 @@ if __name__ == "__main__":
         if pad_numbers is not None:
             text = cipher.apply_one_time_pad(pad_numbers, text)
         processed_text = cipher.encrypt(text)
-    else: # process == 'd'
+    else:  # process == 'd'
         processed_text = cipher.decrypt(text)
         if pad_numbers is not None:
             processed_text = cipher.apply_one_time_pad(
-                pad_numbers, 
-                processed_text, 
+                pad_numbers,
+                processed_text,
                 encrypt_mode=False
             )
-    
-    print(processed_text)
 
+    print(processed_text)
