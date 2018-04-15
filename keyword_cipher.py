@@ -26,15 +26,23 @@ class Keyword(Cipher):
         character_map = self._map_characters(self.keyphrase, substitution_list)
 
         # reduce plaintext to valid characters
+        if self.grouping == 0:
+            # allow spaces as a valid character
+            self.VALID_CHARACTERS += " "
         plaintext = self._reduce_characters(plaintext)
         plaintext = plaintext.lower()
 
         ciphertext = ""
         for character in plaintext:
-            ciphertext += character_map[character]
+            if self.grouping == 0 and character == " ":
+                # pass through spaces unchanged
+                ciphertext += character
+            else:
+                ciphertext += character_map[character]
 
-        grouped_text = self._group_text(ciphertext)
-        return grouped_text
+        if self.grouping != 0:
+            ciphertext = self._group_text(ciphertext)
+        return ciphertext
 
     def decrypt(self, ciphertext):
         '''Takes an encrypted string and returns an decrypted string
