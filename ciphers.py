@@ -11,6 +11,9 @@ class Cipher:
         raise NotImplementedError()
 
     def _reduce_characters(self, text):
+        '''takes a string and returns a string comprising only the characters
+        in the VALID_CHARACTERS list
+        '''
         reduced_text = ""
         for character in text:
             if character.lower() in self.VALID_CHARACTERS:
@@ -56,6 +59,7 @@ class Cipher:
         plaintext) and a plaintext and then returns a new 'plaintext' with the
         pad applied (forward if encrypting, backward if decrypting)
         '''
+        plaintext = self._reduce_characters(plaintext)
         altered_plaintext = ""
         numchars = len(plaintext)
         numvalid = len(self.VALID_CHARACTERS)
