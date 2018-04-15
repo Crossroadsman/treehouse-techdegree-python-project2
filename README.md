@@ -1,5 +1,5 @@
-TBD Title
-=============================
+Project 2: Secret Messages
+==========================
 
 Permitted Programming Constructs
 --------------------------------
