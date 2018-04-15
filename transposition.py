@@ -35,6 +35,7 @@ class Transposition(Cipher):
         # restore rails
         # (construct rails with placeholders)
         placeholder_text = '?' * len(ungrouped)
+        self._initialise_rails(placeholder_text)
         self._add_plaintext_to_rails(placeholder_text)
         # put text into rails
         self._restore_rails(ungrouped)

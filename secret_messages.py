@@ -170,33 +170,42 @@ VALID_ACTIVITIES = {
 # ---------------------------------------------------------------
 
 if __name__ == "__main__":
+    finished = False
 
-    # Get inputs from user
-    cipher_id = select_cipher()
-    text = get_plaintext()
-    process = select_process()
-    pad_numbers = create_one_time_pad(text)
+    while not finished:
 
-    # configure arguments to pass to cipher
-    arguments = {}
-    for function in cipher_id['parameters']:
-        key, value = function()
-        arguments[key] = value
+        # Get inputs from user
+        cipher_id = select_cipher()
+        text = get_plaintext()
+        process = select_process()
+        pad_numbers = create_one_time_pad(text)
 
-    # create specific cipher
-    cipher = cipher_id['class'](**arguments)
+        # configure arguments to pass to cipher
+        arguments = {}
+        for function in cipher_id['parameters']:
+            key, value = function()
+            arguments[key] = value
 
-    if process == 'e':
-        if pad_numbers is not None:
-            text = cipher.apply_one_time_pad(pad_numbers, text)
-        processed_text = cipher.encrypt(text)
-    else:  # process == 'd'
-        processed_text = cipher.decrypt(text)
-        if pad_numbers is not None:
-            processed_text = cipher.apply_one_time_pad(
-                pad_numbers,
-                processed_text,
-                encrypt_mode=False
-            )
+        # create specific cipher
+        cipher = cipher_id['class'](**arguments)
 
-    print(processed_text)
+        if process == 'e':
+            if pad_numbers is not None:
+                text = cipher.apply_one_time_pad(pad_numbers, text)
+            processed_text = cipher.encrypt(text)
+        else:  # process == 'd'
+            processed_text = cipher.decrypt(text)
+            if pad_numbers is not None:
+                processed_text = cipher.apply_one_time_pad(
+                    pad_numbers,
+                    processed_text,
+                    encrypt_mode=False
+                )
+
+        print(processed_text)
+
+        again = input("\nWould you like to go again? [y/n] ")
+        if again.lower() in ['n', 'no']:
+            finished = True
+    
+    print("Goodbye")

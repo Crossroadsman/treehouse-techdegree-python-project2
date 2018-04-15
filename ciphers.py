@@ -64,12 +64,8 @@ class Cipher:
             character = plaintext[character_index].lower()
             lookup_index = self.VALID_CHARACTERS.index(character)
             if encrypt_mode:
-                print("encrypt mode")
                 offset_index = (lookup_index + pad[character_index]) % numvalid
-                print('offset index: {}'.format(offset_index))
             else:
-                print("decrypt mode")
                 offset_index = (lookup_index - pad[character_index]) % numvalid
-                print('offset index: {}'.format(offset_index))
             altered_plaintext += self.VALID_CHARACTERS[offset_index]
         return altered_plaintext
