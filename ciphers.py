@@ -51,19 +51,25 @@ class Cipher:
                 unique.append(character)
         return unique
 
-    def _apply_one_time_pad(self, pad, plaintext, encrypt_mode=True):
+    def apply_one_time_pad(self, pad, plaintext, encrypt_mode=True):
         '''takes a valid one-time pad (array of ints, at least as long as the
         plaintext) and a plaintext and then returns a new 'plaintext' with the
         pad applied (forward if encrypting, backward if decrypting)
         '''
         altered_plaintext = ""
         numchars = len(plaintext)
+        numvalid = len(self.VALID_CHARACTERS)
+
         for character_index in range(numchars):
             character = plaintext[character_index].lower()
             lookup_index = self.VALID_CHARACTERS.index(character)
             if encrypt_mode:
-                offset_index = (lookup_index + pad[character_index]) % numchars
+                print("encrypt mode")
+                offset_index = (lookup_index + pad[character_index]) % numvalid
+                print('offset index: {}'.format(offset_index))
             else:
-                offset_index = (lookup_index - pad[character_index]) % numchars
+                print("decrypt mode")
+                offset_index = (lookup_index - pad[character_index]) % numvalid
+                print('offset index: {}'.format(offset_index))
             altered_plaintext += self.VALID_CHARACTERS[offset_index]
         return altered_plaintext

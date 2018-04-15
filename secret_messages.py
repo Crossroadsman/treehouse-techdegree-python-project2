@@ -16,7 +16,7 @@ def select_cipher():
         remainder = value['name'][1:].lower()
         print(shortcut + remainder)
 
-    cipher_choice = input("Which cipher would you like to use? ").lower()
+    cipher_choice = input("\nWhich cipher would you like to use? ").lower()
     while cipher_choice not in VALID_CIPHERS.keys():
         print("I'm sorry, I didn't recognise that choice. Please try again.")
         print("Valid choices are: ")
@@ -29,13 +29,13 @@ def select_cipher():
 def get_plaintext():
     '''get the input text from the user
     '''
-    plaintext = input("That's an excellent cipher. What's the message? ")
+    plaintext = input("\nThat's an excellent cipher. What's the message? ")
     return plaintext
 
 def select_process():
     '''decide whether to encrypt or decrypt
     '''
-    print("Valid processes are:")
+    print("\nValid processes are:")
     for key, value in VALID_ACTIVITIES.items():
         shortcut = "[" + key.upper() + "]"
         remainder = value[1:].lower()
@@ -54,11 +54,12 @@ def create_one_time_pad(plaintext):
     '''ask the user if they want to use a one-time pad.
     if so, get the value and validate it
     '''
-    line1 = 'Please enter the one-time pad: (or leave blank for none)\n'
-    line2 = 'Pad values should be a comma-separated sequence of integers and must'
-    line3 = ' be at least as long as the text to be encrypted.\n'
-    line4 = 'e.g., if encrypting "Hello", 3,4,17,2,6,9 would be a valid pad: '
-    pad_text = line1 + line2 + line3 + line4
+    line1 = '\nPlease enter the one-time pad: (or leave blank for none)\n'
+    line2 = 'Pad values must be:\n'
+    line3 = '- a comma-separated sequence of integers, and\n'
+    line4 = '- at least as long as the text to be encrypted.\n'
+    line5 = 'e.g., if encrypting "Hello", 3,4,17,2,6,9 would be a valid pad: '
+    pad_text = line1 + line2 + line3 + line4 + line5
     pad_numbers = input(pad_text)
     validated = validate_pad(pad_numbers, len(plaintext))
     while validated['error'] is not None:
@@ -67,7 +68,7 @@ def create_one_time_pad(plaintext):
         print('Please try again.')
         pad_numbers = input(pad_text)
         validated = validate_pad(pad_numbers, len(plaintext))
-    return validated
+    return validated['pad_numbers']
 
 def validate_pad(pad_numbers, min_length):
     '''takes a user-supplied prospective one-time pad and determines its
@@ -108,27 +109,28 @@ def validate_pad(pad_numbers, min_length):
     
 # Functions: Cipher Arguments
 def offset():
-    offset_value = int(input('offset value'))
+    offset_value = int(input('\nChoose an offset value '))
     return ('offset', offset_value)
 
 def num_rails():
-    rails = int(input('number of rails'))
+    rails = int(input('\nChoose the number of rails '))
     return ('num_rails', rails)
 
 def grouping():
-    group = int(input('characters to group by (0 to not group)'))
+    group = int(input('\nHow many characters to group by (0 to not group) '))
     return ('grouping', group)
 
 def keyphrase():
-    phrase = input('keyphrase')
+    phrase = input('\nChoose a keyphrase ')
     return ('keyphrase', phrase)
 
 def size():
-    grid = int(input('Square size (valid values are 5 or 6)'))
+    grid = int(input('\n Choose a square size (valid values are 5 or 6) '))
     return ('size', grid)
 
 def shared_character():
-    character = input('Shared character (valid values are "c", "k", "i", "j")')
+    print("\nChoose a shared character")
+    character = input('(valid values are: "c", "k", "i", "j") ')
     return ('shared_character', character)
 
 # Constants
@@ -161,35 +163,34 @@ VALID_ACTIVITIES = {
 # ---------------------------------------------------------------
 
 if __name__ == "__main__":
-    
+
+    # Get inputs from user
     cipher_id = select_cipher()
     text = get_plaintext()
     process = select_process()
     pad_numbers = create_one_time_pad(text)
+
+    # configure arguments to pass to cipher
     arguments = {}
     for function in cipher_id['parameters']:
         key, value = function()
         arguments[key] = value
 
-
-    print("You selected to {}, using {} cipher, with {} text and {} pad".format(
-        process,
-        cipher_id,
-        text,
-        pad_numbers
-    ))
-
-    print("Your arguments are:")
-    print(arguments)
-
+    # create specific cipher
     cipher = cipher_id['class'](**arguments)
 
-
-
     if process == 'e':
+        if pad_numbers is not None:
+            text = cipher.apply_one_time_pad(pad_numbers, text)
         processed_text = cipher.encrypt(text)
     else: # process == 'd'
         processed_text = cipher.decrypt(text)
+        if pad_numbers is not None:
+            processed_text = cipher.apply_one_time_pad(
+                pad_numbers, 
+                processed_text, 
+                encrypt_mode=False
+            )
     
     print(processed_text)
 
