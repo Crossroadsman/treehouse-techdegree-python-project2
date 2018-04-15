@@ -67,7 +67,7 @@ def create_one_time_pad(plaintext):
         print('Please try again.')
         pad_numbers = input(pad_text)
         validated = validate_pad(pad_numbers, len(plaintext))
-    return pad_numbers
+    return validated
 
 def validate_pad(pad_numbers, min_length):
     '''takes a user-supplied prospective one-time pad and determines its
@@ -183,6 +183,8 @@ if __name__ == "__main__":
     print(arguments)
 
     cipher = cipher_id['class'](**arguments)
+
+
 
     if process == 'e':
         processed_text = cipher.encrypt(text)
