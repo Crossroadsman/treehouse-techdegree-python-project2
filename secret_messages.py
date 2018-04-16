@@ -5,12 +5,36 @@ from transposition import Transposition
 from adfgvx import Adfgvx
 from polybius_square import PolybiusSquare
 
+
 class Menu:
-    
     # Methods
     def __init__(self):
         print('Initialising Menu instance')
+        
+        # Constants
+        self.VALID_CIPHERS = {
+            'c': {'name': 'Caesar',
+                'class': Caesar,
+                'parameters': [(self.offset, 3)]},
+            't': {'name': 'Transposition',
+                'class': Transposition,
+                'parameters': [(self.num_rails, 3), (self.grouping, 5)]},
+            'a': {'name': 'ADFGVX',
+                'class': Adfgvx,
+                'parameters': [(self.keyphrase, 'PRIVACY'), (self.grouping, 5)]},
+            'p': {'name': 'Polybius Square',
+                'class': PolybiusSquare,
+                'parameters': [(self.size, 5), (self.shared_character, 'i')]},
+            'k': {'name': 'Keyword',
+                'class': Keyword,
+                'parameters': [(self.keyphrase, 'PRIVACY'), (self.grouping, 5)]},
+        }
+        self.VALID_ACTIVITIES = {
+            'e': 'encrypt',
+            'd': 'decrypt',
+        }
         self._load_menu()
+
 
     def _load_menu(self):
         '''Determines which screens to show the user, what values to prompt
@@ -31,6 +55,9 @@ class Menu:
             self.cipher_arguments = self._configure_arguments()
 
             # create specific cipher
+            print("ARGS:")
+            for key,value in self.cipher_arguments.items():
+                print("{}: {}".format(key,value))
             self.cipher = self.cipher_id['class'](**self.cipher_arguments)
 
             # set up one time pad (if applicable)
@@ -63,19 +90,19 @@ class Menu:
         print("This is the Secret Messages project for the Treehouse")
         print("Techdegree\n")
         print("These are the current available ciphers:\n")
-        for key, value in ciphers.VALID_CIPHERS.items():
+        for key, value in self.VALID_CIPHERS.items():
             shortcut = "[" + key.upper() + "]"
             remainder = value['name'][1:].lower()
             print(shortcut + remainder)
         cipher_choice = input("\nWhich cipher would you like to use? ").lower()
         print("you choice: {}".format(cipher_choice))
-        while cipher_choice not in ciphers.VALID_CIPHERS.keys():
+        while cipher_choice not in self.VALID_CIPHERS.keys():
             print("I'm sorry, I didn't recognise that choice. Please try again.")
             print("Valid choices are: ")
-            for letter in ciphers.VALID_CIPHERS.keys():
+            for letter in self.VALID_CIPHERS.keys():
                 print(letter)
             cipher_choice = input("Which cipher would you like to use? ").lower()
-        return ciphers.VALID_CIPHERS[cipher_choice]
+        return self.VALID_CIPHERS[cipher_choice]
 
     def _get_plaintext(self):
         '''get the input text from the user
@@ -112,13 +139,13 @@ class Menu:
         line5 = 'e.g., if encrypting "Hello", 3,4,17,2,6,9 would be a valid pad: '
         pad_text = line1 + line2 + line3 + line4 + line5
         pad_numbers = input(pad_text)
-        validated = self.validate_pad(pad_numbers, len(plaintext))
+        validated = self._validate_pad(pad_numbers, len(plaintext))
         while validated['error'] is not None:
             print('Your supplied pad value was invalid:')
             print(validated['error'])
             print('Please try again.')
             pad_numbers = input(pad_text)
-            validated = self.validate_pad(pad_numbers, len(plaintext))
+            validated = self._validate_pad(pad_numbers, len(plaintext))
         return validated['pad_numbers']
 
     def _validate_pad(self, pad_numbers, min_length):
@@ -163,12 +190,12 @@ class Menu:
         '''returns a dictionary of argument names and values'''
         # configure arguments to pass to cipher
         arguments = {}
-        for pair in cipher_id['parameters']:
+        for pair in self.cipher_id['parameters']:
             function = pair[0]
             default_value = pair[1]
-            state = {'text': text,
-                    'process': process,
-                    'pad_numbers': pad_numbers,
+            state = {'text': self.text,
+                    'process': self.process,
+                    'pad_numbers': self.pad_numbers,
             }
             key, value = function(default_value, state)
             arguments[key] = value
@@ -180,7 +207,7 @@ class Menu:
         if offset_value == '':
             return ('offset', default_value)
         else:
-            return ('offset', offset_value)
+            return ('offset', int(offset_value))
 
     def num_rails(self, default_value, state):
         print('\nChoose the number of rails')
