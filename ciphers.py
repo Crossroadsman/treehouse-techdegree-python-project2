@@ -3,6 +3,10 @@ class Cipher:
     VALID_CHARACTERS = [
         'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
         'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+    
+    PASSTHROUGH_CHARACTERS = [
+        ' ',
+    ]
 
     def encrypt(self):
         raise NotImplementedError()
@@ -12,11 +16,12 @@ class Cipher:
 
     def _reduce_characters(self, text):
         '''takes a string and returns a string comprising only the characters
-        in the VALID_CHARACTERS list
+        in the VALID_CHARACTERS or PASSTHROUGH_CHARACTERS lists
         '''
         reduced_text = ""
         for character in text:
-            if character.lower() in self.VALID_CHARACTERS:
+            lower = character.lower()
+            if lower in (self.VALID_CHARACTERS + self.PASSTHROUGH_CHARACTERS):
                 reduced_text += character
         return reduced_text
 
@@ -53,23 +58,3 @@ class Cipher:
             if character not in unique:
                 unique.append(character)
         return unique
-
-    def apply_one_time_pad(self, pad, plaintext, encrypt_mode=True):
-        '''takes a valid one-time pad (array of ints, at least as long as the
-        plaintext) and a plaintext and then returns a new 'plaintext' with the
-        pad applied (forward if encrypting, backward if decrypting)
-        '''
-        plaintext = self._reduce_characters(plaintext)
-        altered_plaintext = ""
-        numchars = len(plaintext)
-        numvalid = len(self.VALID_CHARACTERS)
-
-        for character_index in range(numchars):
-            character = plaintext[character_index].lower()
-            lookup_index = self.VALID_CHARACTERS.index(character)
-            if encrypt_mode:
-                offset_index = (lookup_index + pad[character_index]) % numvalid
-            else:
-                offset_index = (lookup_index - pad[character_index]) % numvalid
-            altered_plaintext += self.VALID_CHARACTERS[offset_index]
-        return altered_plaintext

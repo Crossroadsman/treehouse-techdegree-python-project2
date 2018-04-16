@@ -4,6 +4,7 @@ from caesar import Caesar
 from transposition import Transposition
 from adfgvx import Adfgvx
 from polybius_square import PolybiusSquare
+from one_time_pad import OneTimePad
 
 
 class Menu:
@@ -139,51 +140,17 @@ class Menu:
         line5 = 'e.g., if encrypting "Hello", 3,4,17,2,6,9 would be a valid pad: '
         pad_text = line1 + line2 + line3 + line4 + line5
         pad_numbers = input(pad_text)
-        validated = self._validate_pad(pad_numbers, len(plaintext))
+        if input == "":
+            return None
+        self.one_time_pad = OneTimePad()
+        validated = self.one_time_pad.validate_pad(pad_numbers, len(plaintext))
         while validated['error'] is not None:
             print('Your supplied pad value was invalid:')
             print(validated['error'])
             print('Please try again.')
             pad_numbers = input(pad_text)
-            validated = self._validate_pad(pad_numbers, len(plaintext))
+            validated = self.one_time_pad.validate_pad(pad_numbers, len(plaintext))
         return validated['pad_numbers']
-
-    def _validate_pad(self, pad_numbers, min_length):
-        '''takes a user-supplied prospective one-time pad and determines its
-        validity.
-        Returns a dictionary with two keys, `error` and `pad_numbers`.
-        If the pad is valid, error will be None and pad_numbers will be the values
-        (None can be a valid value for pad_numbers).
-        If the pad is invalid, error will be a description of the error and
-        pad_numbers will be None
-        '''
-        # check if pad is blank
-        if pad_numbers == '':
-            error = None
-            pad_numbers = None
-            return {'error': error,
-                    'pad_numbers': pad_numbers}
-
-        # turn comma-separated into list of values
-        pad_numbers = pad_numbers.split(',')
-
-        # try to convert the list elements into ints
-        try:
-            pad_numbers = [int(element) for element in pad_numbers]
-        except ValueError:
-            error = 'Invalid characters in pad, should only contain ints'
-            pad_numbers = None
-            return {'error': error,
-                    'pad_numbers': pad_numbers}
-
-        # check the length is sufficient
-        if len(pad_numbers) < min_length:
-            error = 'Too short, pad must be at least as long as plaintext'
-            pad_numbers = None
-        else:
-            error = None
-        return {'error': error,
-                'pad_numbers': pad_numbers}
 
     # Functions: Cipher Arguments
     def _configure_arguments(self):

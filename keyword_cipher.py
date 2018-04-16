@@ -26,19 +26,18 @@ class Keyword(Cipher):
         character_map = self._map_characters(self.keyphrase, substitution_list)
 
         # reduce plaintext to valid characters
-        if self.grouping == 0:
-            # allow spaces as a valid character
-            self.VALID_CHARACTERS += " "
+        if self.grouping != 0:
+            # do not allow spaces as a valid character
+            self.PASSTHROUGH_CHARACTERS = []
         plaintext = self._reduce_characters(plaintext)
         plaintext = plaintext.lower()
 
         ciphertext = ""
         for character in plaintext:
-            if self.grouping == 0 and character == " ":
-                # pass through spaces unchanged
-                ciphertext += character
-            else:
+            if character in self.VALID_CHARACTERS:
                 ciphertext += character_map[character]
+            elif character in self.PASSTHROUGH_CHARACTERS:
+                ciphertext += character
 
         if self.grouping != 0:
             ciphertext = self._group_text(ciphertext)
