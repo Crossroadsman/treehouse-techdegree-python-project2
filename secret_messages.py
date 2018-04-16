@@ -11,24 +11,29 @@ class Menu:
     # Methods
     def __init__(self):
         print('Initialising Menu instance')
-        
+
         # Constants
         self.VALID_CIPHERS = {
             'c': {'name': 'Caesar',
-                'class': Caesar,
-                'parameters': [(self.offset, 3)]},
+                  'class': Caesar,
+                  'parameters': [(self.offset, 3),
+                                 (self.grouping, 5)]},
             't': {'name': 'Transposition',
-                'class': Transposition,
-                'parameters': [(self.num_rails, 3), (self.grouping, 5)]},
+                  'class': Transposition,
+                  'parameters': [(self.num_rails, 3),
+                                 (self.grouping, 5)]},
             'a': {'name': 'ADFGVX',
-                'class': Adfgvx,
-                'parameters': [(self.keyphrase, 'PRIVACY'), (self.grouping, 5)]},
+                  'class': Adfgvx,
+                  'parameters': [(self.keyphrase, 'PRIVACY'),
+                                 (self.grouping, 5)]},
             'p': {'name': 'Polybius Square',
-                'class': PolybiusSquare,
-                'parameters': [(self.size, 5), (self.shared_character, 'i')]},
+                  'class': PolybiusSquare,
+                  'parameters': [(self.size, 5),
+                                 (self.shared_character, 'i')]},
             'k': {'name': 'Keyword',
-                'class': Keyword,
-                'parameters': [(self.keyphrase, 'PRIVACY'), (self.grouping, 5)]},
+                  'class': Keyword,
+                  'parameters': [(self.keyphrase, 'PRIVACY'),
+                                 (self.grouping, 5)]},
         }
         self.VALID_ACTIVITIES = {
             'e': 'encrypt',
@@ -36,13 +41,12 @@ class Menu:
         }
         self._load_menu()
 
-
     def _load_menu(self):
         '''Determines which screens to show the user, what values to prompt
         for and how to pass those values into whichever cipher is chosen
         '''
         print("Loading menu")
-        
+
         finished = False
         print("Entering UI loop")
         while not finished:
@@ -58,26 +62,26 @@ class Menu:
             # create specific cipher
             print("Creating cipher")
             print("ARGS:")
-            for key,value in self.cipher_arguments.items():
-                print("{}: {}".format(key,value))
+            for key, value in self.cipher_arguments.items():
+                print("{}: {}".format(key, value))
             self.cipher = self.cipher_id['class'](**self.cipher_arguments)
 
             # set up one time pad (if applicable)
             print("Creating one-time-pad (if applicable...)")
             if self.process == 'e':
-                if self.one_time_pad is not None:
-                    if self.one_time_pad.pad_numbers is not None:
+                if self.pad is not None:
+                    if self.pad.pad_numbers is not None:
                         print("...applicable:")
-                        print(self.one_time_pad)
-                        self.text = self.one_time_pad.apply_one_time_pad(
-                            self.text, 
+                        print(self.pad)
+                        self.text = self.pad.apply_one_time_pad(
+                            self.text,
                             self.cipher)
                     self.processed_text = self.cipher.encrypt(self.text)
             else:  # process == 'd'
                 self.processed_text = self.cipher.decrypt(self.text)
-                if self.one_time_pad is not None:
-                    if self.one_time_pad.pad_numbers is not None:
-                        self.processed_text = self.one_time_pad.apply_one_time_pad(
+                if self.pad is not None:
+                    if self.pad.pad_numbers is not None:
+                        self.processed_text = self.pad.apply_one_time_pad(
                             self.processed_text,
                             self.cipher,
                             encrypt_mode=False
@@ -147,15 +151,15 @@ class Menu:
         pad_text = line1 + line2 + line3 + line4 + line5
         pad_numbers = input(pad_text)
         if input == "":
-            self.one_time_pad = None
+            self.pad = None
         else:
-            self.one_time_pad = OneTimePad(pad_numbers, plaintext)
-            while self.one_time_pad.error is not None:
+            self.pad = OneTimePad(pad_numbers, plaintext)
+            while self.pad.error is not None:
                 print('Your supplied pad value was invalid:')
-                print(self.one_time_pad.error)
+                print(self.pad.error)
                 print('Please try again.')
                 pad_numbers = input(pad_text)
-                self.one_time_pad = OneTimePad(pad_numbers, plaintext)
+                self.pad = OneTimePad(pad_numbers, plaintext)
 
     # Functions: Cipher Arguments
     def _configure_arguments(self):
@@ -165,14 +169,11 @@ class Menu:
         for pair in self.cipher_id['parameters']:
             function = pair[0]
             default_value = pair[1]
-            state = {'text': self.text,
-                    'process': self.process,
-            }
-            key, value = function(default_value, state)
+            key, value = function(default_value)
             arguments[key] = value
         return arguments
 
-    def offset(self, default_value, state):
+    def offset(self, default_value):
         print("\nChoose an offset value")
         offset_value = input('Or leave blank for default ({}) '.format(default_value))
         if offset_value == '':
@@ -180,17 +181,17 @@ class Menu:
         else:
             return ('offset', int(offset_value))
 
-    def num_rails(self, default_value, state):
+    def num_rails(self, default_value):
         print('\nChoose the number of rails')
         rails = input('Or leave blank for default ({}) '.format(default_value))
         if rails == '':
             return ('num_rails', default_value)
         else:
-            return ('num_rails', rails)
+            return ('num_rails', int(rails))
 
-    def grouping(self, default_value, state):
-        if state['process'] == 'd':
-            return ('grouping', default_value)
+    def grouping(self, default_value):
+        if self.process == 'd':
+            return ('grouping', 0)
         else:
             group = input('\nHow many characters to group by (0 to not group) ')
             if group == '':
@@ -201,7 +202,7 @@ class Menu:
                 raise ValueError("Invalid input. Should be an int")
             return ('grouping', group)
 
-    def keyphrase(self, default_value, state):
+    def keyphrase(self, default_value):
         print("\nChoose a keyphrase ")
         phrase = input('Or leave blank for default ({}) '.format(default_value))
         if phrase == '':
@@ -209,12 +210,12 @@ class Menu:
         else:
             return ('keyphrase', phrase)
 
-    def size(self, default_value, state):
+    def size(self, default_value):
         grid = int(input('\n Choose a square size (valid values are 5 or 6) '))
         self.grid_size = grid
         return ('size', grid)
 
-    def shared_character(self, default_value, state):
+    def shared_character(self, default_value):
         if self.grid:
             print("\nChoose a shared character")
             character = input('(valid values are: "c", "k", "i", "j") ')
