@@ -23,21 +23,37 @@ class Adfgvx(Cipher):
     def encrypt(self, plaintext):
         '''Takes a string and returns an encrypted string
         '''
+        print(plaintext)
         # get the (A,D) (F,G) etc ciphertext using the custom polybius
+        print("creating polybius square output...")
         self.polybius_text = self.polybius_cipher.encrypt(plaintext)
+        print(self.polybius_text)
+        
         # create keyphrase columns and take each character from the
         # polybius_text and put it into keyphrase_columns
+        print('create and populate keyphrase columns...')
         self._populate_keyphrase_columns()
+        print(self.keyphrase_columns)
+
         # sort the columns alphabetically
+        print('sort the columns...')
         self.keyphrase_columns.sort()
+        print(self.keyphrase_columns)
+
         # take the letters from the columns and create a single long list
         # of characters
+        print("Take letters from columns and turn into character sequence...")
         ciphertext = ""
         for column in self.keyphrase_columns:
             for character in column[1:]:
+                print(character)
                 ciphertext += character
+        print(ciphertext)
+
         # perform grouping
+        print('grouping...')
         grouped_text = self._group_text(ciphertext)
+        print(grouped_text)
         return grouped_text
 
     def decrypt(self, ciphertext):
@@ -45,6 +61,8 @@ class Adfgvx(Cipher):
         '''
         # ungroup text
         ungrouped_text = self._ungroup_text(ciphertext)
+        print("ungrouping text")
+        print("{} -> {}".format(ciphertext, ungrouped_text))
         # create sorted columns
         columns = self._create_cols_kp_chars(self.keyphrase)
         sorted_columns = sorted(columns)

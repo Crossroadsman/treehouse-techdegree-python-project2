@@ -1,3 +1,26 @@
+# Constants
+VALID_CIPHERS = {
+    'c': {'name': 'Caesar',
+        'class': Caesar,
+        'parameters': [(offset, 3)]},
+    't': {'name': 'Transposition',
+        'class': Transposition,
+        'parameters': [(num_rails, 3), (grouping, 5)]},
+    'a': {'name': 'ADFGVX',
+        'class': Adfgvx,
+        'parameters': [(keyphrase, 'PRIVACY'), (grouping, 5)]},
+    'p': {'name': 'Polybius Square',
+        'class': PolybiusSquare,
+        'parameters': [(size, 5), (shared_character, 'i')]},
+    'k': {'name': 'Keyword',
+        'class': Keyword,
+        'parameters': [(keyphrase, 'PRIVACY'), (grouping, 5)]},
+}
+VALID_ACTIVITIES = {
+    'e': 'encrypt',
+    'd': 'decrypt',
+}
+
 class Cipher:
 
     VALID_CHARACTERS = [
