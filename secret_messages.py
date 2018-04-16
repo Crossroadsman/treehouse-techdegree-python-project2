@@ -52,7 +52,7 @@ class Menu:
             self.cipher_id = self._select_cipher()
             self.text = self._get_plaintext()
             self.process = self._select_process()
-            self.pad_numbers = self._create_one_time_pad(self.text)
+            self._create_one_time_pad(self.text)
             self.cipher_arguments = self._configure_arguments()
 
             # create specific cipher
@@ -63,17 +63,17 @@ class Menu:
 
             # set up one time pad (if applicable)
             if self.process == 'e':
-                if self.pad_numbers is not None:
-                    self.text = self.cipher.apply_one_time_pad(
-                        self.pad_numbers, 
-                        self.text)
+                if self.one_time_pad is not None:
+                    self.text = self.one_time_pad.apply_one_time_pad(
+                        self.text, 
+                        self.cipher)
                 self.processed_text = self.cipher.encrypt(self.text)
             else:  # process == 'd'
                 self.processed_text = self.cipher.decrypt(self.text)
-                if self.pad_numbers is not None:
-                    self.processed_text = self.cipher.apply_one_time_pad(
-                        self.pad_numbers,
+                if self.one_time_pad is not None:
+                    self.processed_text = self.one_time_pad.apply_one_time_pad(
                         self.processed_text,
+                        self.cipher,
                         encrypt_mode=False
                     )
 
@@ -141,16 +141,14 @@ class Menu:
         pad_text = line1 + line2 + line3 + line4 + line5
         pad_numbers = input(pad_text)
         if input == "":
-            return None
-        self.one_time_pad = OneTimePad()
-        validated = self.one_time_pad.validate_pad(pad_numbers, len(plaintext))
-        while validated['error'] is not None:
+            self.one_time_pad = None
+        self.one_time_pad = OneTimePad(pad_numbers, plaintext)
+        while self.one_time_pad.error is not None:
             print('Your supplied pad value was invalid:')
-            print(validated['error'])
+            print(self.one_time_pad.error)
             print('Please try again.')
             pad_numbers = input(pad_text)
-            validated = self.one_time_pad.validate_pad(pad_numbers, len(plaintext))
-        return validated['pad_numbers']
+            self.one_time_pad = OneTimePad(pad_numbers, plaintext)
 
     # Functions: Cipher Arguments
     def _configure_arguments(self):
