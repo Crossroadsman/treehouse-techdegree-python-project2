@@ -1,7 +1,7 @@
 class OneTimePad():
 
     def __init__(self, pad_numbers, plaintext):
-        validated = self._validate_pad(pad_numbers, len(plaintext)):
+        validated = self._validate_pad(pad_numbers, len(plaintext))
         self.error = validated['error']
         self.pad_numbers = validated['pad_numbers']
     
@@ -69,3 +69,9 @@ class OneTimePad():
                 altered_plaintext += character
                 
         return altered_plaintext
+
+    def __repr__(self):
+        if self.error is not None:
+            return "Pad with Error: {}".format(self.error)
+        else:
+            return "Pad: {}".format(self.pad_numbers)

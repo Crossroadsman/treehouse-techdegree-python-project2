@@ -16,6 +16,7 @@ class Transposition(Cipher):
     def __init__(self, num_rails=3, grouping=5):
         self.num_rails = num_rails
         self.grouping = grouping
+        self.PASSTHROUGH_CHARACTERS = []
 
     def encrypt(self, plaintext):
         '''Takes a string and returns an encrypted string

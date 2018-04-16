@@ -44,11 +44,11 @@ class Menu:
         print("Loading menu")
         
         finished = False
-
         print("Entering UI loop")
         while not finished:
 
             # Get inputs from user
+            print("Getting inputs")
             self.cipher_id = self._select_cipher()
             self.text = self._get_plaintext()
             self.process = self._select_process()
@@ -56,26 +56,32 @@ class Menu:
             self.cipher_arguments = self._configure_arguments()
 
             # create specific cipher
+            print("Creating cipher")
             print("ARGS:")
             for key,value in self.cipher_arguments.items():
                 print("{}: {}".format(key,value))
             self.cipher = self.cipher_id['class'](**self.cipher_arguments)
 
             # set up one time pad (if applicable)
+            print("Creating one-time-pad (if applicable...)")
             if self.process == 'e':
                 if self.one_time_pad is not None:
-                    self.text = self.one_time_pad.apply_one_time_pad(
-                        self.text, 
-                        self.cipher)
-                self.processed_text = self.cipher.encrypt(self.text)
+                    if self.one_time_pad.pad_numbers is not None:
+                        print("...applicable:")
+                        print(self.one_time_pad)
+                        self.text = self.one_time_pad.apply_one_time_pad(
+                            self.text, 
+                            self.cipher)
+                    self.processed_text = self.cipher.encrypt(self.text)
             else:  # process == 'd'
                 self.processed_text = self.cipher.decrypt(self.text)
                 if self.one_time_pad is not None:
-                    self.processed_text = self.one_time_pad.apply_one_time_pad(
-                        self.processed_text,
-                        self.cipher,
-                        encrypt_mode=False
-                    )
+                    if self.one_time_pad.pad_numbers is not None:
+                        self.processed_text = self.one_time_pad.apply_one_time_pad(
+                            self.processed_text,
+                            self.cipher,
+                            encrypt_mode=False
+                        )
 
             print(self.processed_text)
 
@@ -142,13 +148,14 @@ class Menu:
         pad_numbers = input(pad_text)
         if input == "":
             self.one_time_pad = None
-        self.one_time_pad = OneTimePad(pad_numbers, plaintext)
-        while self.one_time_pad.error is not None:
-            print('Your supplied pad value was invalid:')
-            print(self.one_time_pad.error)
-            print('Please try again.')
-            pad_numbers = input(pad_text)
+        else:
             self.one_time_pad = OneTimePad(pad_numbers, plaintext)
+            while self.one_time_pad.error is not None:
+                print('Your supplied pad value was invalid:')
+                print(self.one_time_pad.error)
+                print('Please try again.')
+                pad_numbers = input(pad_text)
+                self.one_time_pad = OneTimePad(pad_numbers, plaintext)
 
     # Functions: Cipher Arguments
     def _configure_arguments(self):
@@ -160,7 +167,6 @@ class Menu:
             default_value = pair[1]
             state = {'text': self.text,
                     'process': self.process,
-                    'pad_numbers': self.pad_numbers,
             }
             key, value = function(default_value, state)
             arguments[key] = value
