@@ -23,6 +23,8 @@ class PolybiusSquare(Cipher):
     '''
 
     def __init__(self, size=5, shared_character='i', custom_square=None):
+        self.PASSTHROUGH_CHARACTERS = []
+
         # validation
         #   size
         if not isinstance(size, int):
@@ -39,7 +41,7 @@ class PolybiusSquare(Cipher):
             raise ValueError(error_text)
 
         if custom_square:
-            self.shared_character = shared_character
+            self.shared_character = None
             self.column_ids = custom_square['column_ids']
             self.row_ids = custom_square['row_ids']
             self.square = custom_square['square']
@@ -49,13 +51,13 @@ class PolybiusSquare(Cipher):
         else:
             self.column_ids = None
             self.row_ids = None
-            self.square = self._generate_square(size, shared_character)
             if size == 5:
                 self.shared_character = shared_character.lower()
             else:
                 self.shared_character = None
                 self.VALID_CHARACTERS += ['0', '1', '2', '3', '4', '5', '6',
                                           '7', '8', '9']
+            self.square = self._generate_square()
 
     def encrypt(self, plaintext):
         '''Takes a string and returns an encrypted string
@@ -77,12 +79,12 @@ class PolybiusSquare(Cipher):
         return plaintext
 
     # Helper methods
-    def _generate_square(self, size=5, shared_character='i'):
+    def _generate_square(self):
         '''Creates the polybius_square based on the specified inputs
         (whether to make it 5x5 or 6x6, and which characters to combine for
         5x5 variants)
         '''
-        if size == 5:
+        if self.size == 5:
             if shared_character.lower() in ['i', 'j']:
                 return [
                     ['a', 'b', 'c', 'd', 'e'],
