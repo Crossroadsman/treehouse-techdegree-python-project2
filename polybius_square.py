@@ -22,8 +22,9 @@ class PolybiusSquare(Cipher):
     characters enclosed in parens.
     '''
 
-    def __init__(self, size=5, shared_character='i', custom_square=None):
+    def __init__(self, size=5, shared_character='i', custom_square=None, grouping=0):
         self.PASSTHROUGH_CHARACTERS = []
+        self.grouping = grouping
 
         # validation
         #   size
@@ -84,12 +85,14 @@ class PolybiusSquare(Cipher):
             cipher_pairs.append(self._encode_character(character))
         flattened = self._flatten_list(cipher_pairs)
         ciphertext = self._stringify(flattened)
-        return ciphertext
+        grouped_text = self._group_text(ciphertext)
+        return grouped_text
 
     def decrypt(self, ciphertext, use_ids=False):
         '''Takes an encrypted string and returns an decrypted string
         '''
-        pairs = self._pair_array(ciphertext)
+        ungrouped = self._ungroup_text(ciphertext)
+        pairs = self._pair_array(ungrouped)
         plaintext = ""
         for (row, col) in pairs:
             plaintext += self._decode_character(int(row), int(col), use_ids)
@@ -246,8 +249,11 @@ if __name__ == "__main__":
         #'c: shared_character only (none)': {'shared_character': None},
         #'d: shared_character only ("")': {'shared_character': ''},
         'e: shared_character only ("c")': {'shared_character': 'c'},
+        'f: grouping only (5)': {'grouping': 5},
         'g: size (6) and shared_character ("c")': {'size': 6,
-                                                   'shared_character': "c"}
+                                                   'shared_character': "c"},
+        'h: size (6) and grouping (5)': {'size': 6,
+                                         'grouping': 5}
     }
     
     test_sets = [

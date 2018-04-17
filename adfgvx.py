@@ -90,7 +90,7 @@ class Adfgvx(Cipher):
 
         # unsort the columns
         unsorted_columns = self._unsorter(self.keyphrase, sorted_columns)
-
+        """
         # create pairs from values in columns
         pairs = []
         column_index = 0
@@ -107,9 +107,10 @@ class Adfgvx(Cipher):
             if column_index + 2 > len(unsorted_columns) - 1:
                 row_index += 1
             column_index = (column_index + 2) % len(unsorted_columns)
-
+        """
         # decode pairs
-        decoded_text = self.polybius_cipher.decrypt(pairs, use_ids=True)
+        #decoded_text = self.polybius_cipher.decrypt(pairs, use_ids=True)
+        decoded_text = self.polybius_cipher.decrypt(unsorted_columns, use_ids=True)
         return(decoded_text)
 
     # Helper methods
@@ -137,15 +138,14 @@ class Adfgvx(Cipher):
         individual characters from cipher pairs
         '''
         self.keyphrase_columns = self._create_cols_kp_chars(self.keyphrase)
-
-        # Split the cipher pairs and put each half into the next available
-        # column:
+        print('keyphrase columns: ')
+        print(self.keyphrase_columns)
+        print('polybius_text: {}'.format(self.polybius_text))
+        
         i = 0
         unique_length = len(self._uniquify_keyphrase(self.keyphrase))
-        for character_pair in self.polybius_text:
-            self.keyphrase_columns[i].append(character_pair[0])
-            i = (i + 1) % unique_length
-            self.keyphrase_columns[i].append(character_pair[1])
+        for character in self.polybius_text:
+            self.keyphrase_columns[i].append(character)
             i = (i + 1) % unique_length
 
     def _uniquify_keyphrase(self, keyphrase):
