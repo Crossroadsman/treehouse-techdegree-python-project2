@@ -25,21 +25,21 @@ class Adfgvx(Cipher):
         '''
         # get the (A,D) (F,G) etc ciphertext using the custom polybius
         self.polybius_text = self.polybius_cipher.encrypt(plaintext)
-        
+
         # create keyphrase columns and take each character from the
         # polybius_text and put it into keyphrase_columns
         self._populate_keyphrase_columns()
-        
+
         # sort the columns alphabetically
         self.keyphrase_columns.sort()
-        
+
         # take the letters from the columns and create a single long list
         # of characters
         ciphertext = ""
         for column in self.keyphrase_columns:
             for character in column[1:]:
                 ciphertext += character
-        
+
         # perform grouping
         grouped_text = self._group_text(ciphertext)
         return grouped_text
@@ -195,7 +195,7 @@ class Adfgvx(Cipher):
 # ----------------------------------------------------------------------
 
 if __name__ == "__main__":
-    
+
     def run_tests(cipher_class, plaintext, tests):
         for key, value in tests.items():
             print('\ntest {}'.format(key))
@@ -208,7 +208,6 @@ if __name__ == "__main__":
             decrypted = cipher.decrypt(encrypted)
             print(decrypted)
 
-
     print("Run Test Suite")
     print("==============")
     tests = {
@@ -219,7 +218,7 @@ if __name__ == "__main__":
         'e: keyphrase ("PEOPLE") and grouping (3)': {'keyphrase': "PEOPLE",
                                                      'grouping': 3}
     }
-    
+
     test_sets = [
         'the quick brown fox jumps over the lazy dog',
         'numb3r5 and punctuat!0n',

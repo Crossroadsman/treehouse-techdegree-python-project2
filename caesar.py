@@ -63,7 +63,6 @@ if __name__ == "__main__":
             decrypted = cipher.decrypt(encrypted)
             print(decrypted)
 
-
     print("Run Test Suite")
     print("==============")
     tests = {
@@ -74,7 +73,7 @@ if __name__ == "__main__":
         'e: offset (4) and grouping (3)': {'offset': 4,
                                            'grouping': 3}
     }
-    
+
     test_sets = [
         'the quick brown fox jumps over the lazy dog',
         'numb3r5 and punctuat!0n',

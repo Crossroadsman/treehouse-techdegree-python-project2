@@ -146,7 +146,7 @@ class Transposition(Cipher):
 # -----------------------------------------------------------------
 
 if __name__ == "__main__":
-    
+
     def run_tests(cipher_class, plaintext, tests):
         for key, value in tests.items():
             print('\ntest {}'.format(key))
@@ -159,7 +159,6 @@ if __name__ == "__main__":
             decrypted = cipher.decrypt(encrypted)
             print(decrypted)
 
-
     print("Run Test Suite")
     print("==============")
     tests = {
@@ -170,7 +169,7 @@ if __name__ == "__main__":
         'e: num_rails (4) and grouping (3)': {'num_rails': 4,
                                               'grouping': 3}
     }
-    
+
     test_sets = [
         'the quick brown fox jumps over the lazy dog',
         'numb3r5 and punctuat!0n',

@@ -79,17 +79,20 @@ class PolybiusSquare(Cipher):
         '''
         plaintext = self._reduce_characters(plaintext)
         plaintext = self._combine_characters(plaintext)
-        ciphertext = []
+        cipher_pairs = []
         for character in plaintext:
-            ciphertext.append(self._encode_character(character))
+            cipher_pairs.append(self._encode_character(character))
+        flattened = self._flatten_list(cipher_pairs)
+        ciphertext = self._stringify(flattened)
         return ciphertext
 
     def decrypt(self, ciphertext, use_ids=False):
         '''Takes an encrypted string and returns an decrypted string
         '''
+        pairs = self._pair_array(ciphertext)
         plaintext = ""
-        for (row, col) in ciphertext:
-            plaintext += self._decode_character(row, col, use_ids)
+        for (row, col) in pairs:
+            plaintext += self._decode_character(int(row), int(col), use_ids)
         plaintext = self._replace_unknowns(plaintext)
         return plaintext
 
@@ -198,6 +201,25 @@ class PolybiusSquare(Cipher):
             else:
                 replaced += character
         return replaced
+
+    def _flatten_list(self, nested):
+        '''takes a list with an inner iterable and flattens it to a single
+        list'''
+        output_list = []
+        for inner in nested:
+            for element in inner:
+                output_list.append(element)
+        return output_list
+
+    def _stringify(self, list):
+        '''takes a list that contains non-string elements and joins them into a 
+        single string
+        '''
+        return "".join([str(elem) for elem in list])
+
+    def _pair_array(self, text):
+        '''takes a string and outputs a list of pairs'''
+        return [(odd, even) for (odd, even) in zip(text[::2],text[1::2])]
 
 # -----------------------------------------------------------------
 
