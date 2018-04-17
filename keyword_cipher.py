@@ -114,70 +114,39 @@ class Keyword(Cipher):
 # ----------------------------------------------------------------------
 
 if __name__ == "__main__":
-    print("Run tests")
+    
+    def run_tests(cipher_class, plaintext, tests):
+        for key, value in tests.items():
+            print('\ntest {}'.format(key))
+            kwargs = value
+            cipher = cipher_class(**kwargs)
+            print("encrypting {}:".format(plaintext))
+            encrypted = cipher.encrypt(plaintext)
+            print(encrypted)
+            print("decrypting {}:".format(encrypted))
+            decrypted = cipher.decrypt(encrypted)
+            print(decrypted)
 
-    print("Test 1: Create Keyword Cipher object (with defaults)")
-    cipher = Keyword()
 
-    print('create plaintext')
-    plaintext = 'Knowledge is power'
-    print(plaintext)
+    print("Run Test Suite")
+    print("==============")
+    tests = {
+        'a: defaults': {},
+        'b: keyphrase only (PEOPLE)': {'keyphrase': "PEOPLE"},
+        'c: grouping only (none)': {'grouping': 0},
+        'd: grouping only (3)': {'grouping': 3},
+        'e: keyphrase (PEOPLE) and grouping (3)': {'keyphrase': "PEOPLE",
+                                                   'grouping': 3}
+    }
+    
+    test_sets = [
+        'the quick brown fox jumps over the lazy dog',
+        'numb3r5 and punctuat!0n',
+        'Hello Peers'
+    ]
 
-    print('encrypt plaintext')
-    ciphertext = cipher.encrypt(plaintext)
-
-    print(ciphertext)
-
-    print('decrypting ciphertext')
-    decoded = cipher.decrypt(ciphertext)
-    print(decoded)
-
-    print("Test 2: Create Keyword Cipher object")
-    print("with defaults and non-multiple plaintext)")
-    cipher = Keyword()
-
-    print('create plaintext')
-    plaintext = 'Knowledge is power'
-    print(plaintext)
-
-    print('encrypt plaintext')
-    ciphertext = cipher.encrypt(plaintext)
-
-    print(ciphertext)
-
-    print('decrypting ciphertext')
-    decoded = cipher.decrypt(ciphertext)
-    print(decoded)
-
-    print("Test 3: Create Keyword Cipher object (with custom key)")
-    # cipher = Keyword(keyphrase='HAS REPEATS')
-    cipher = Keyword(keyphrase='KRYPTOS')
-
-    print('create plaintext')
-    plaintext = 'Knowledge is power'
-    print(plaintext)
-
-    print('encrypt plaintext')
-    ciphertext = cipher.encrypt(plaintext)
-
-    print(ciphertext)
-
-    print('decrypting ciphertext')
-    decoded = cipher.decrypt(ciphertext)
-    print(decoded)
-
-    print("Test 4: Create Keyword Cipher object (with custom grouping)")
-    cipher = Keyword(grouping=4)
-
-    print('create plaintext')
-    plaintext = 'Knowledge is power'
-    print(plaintext)
-
-    print('encrypt plaintext')
-    ciphertext = cipher.encrypt(plaintext)
-
-    print(ciphertext)
-
-    print('decrypting ciphertext')
-    decoded = cipher.decrypt(ciphertext)
-    print(decoded)
+    for i in range(len(test_sets)):
+        print("\nTest set {}:".format(i + 1))
+        print("-----------")
+        plaintext = test_sets[i]
+        run_tests(Keyword, plaintext, tests)
