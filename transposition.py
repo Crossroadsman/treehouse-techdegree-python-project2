@@ -146,64 +146,39 @@ class Transposition(Cipher):
 # -----------------------------------------------------------------
 
 if __name__ == "__main__":
-    print("Run tests")
-    plaintext = 'WE ARE DISCOVERED. FLEE AT ONCE'
+    
+    def run_tests(cipher_class, plaintext, tests):
+        for key, value in tests.items():
+            print('\ntest {}'.format(key))
+            kwargs = value
+            cipher = cipher_class(**kwargs)
+            print("encrypting {}:".format(plaintext))
+            encrypted = cipher.encrypt(plaintext)
+            print(encrypted)
+            print("decrypting {}:".format(encrypted))
+            decrypted = cipher.decrypt(encrypted)
+            print(decrypted)
 
-    print("Test 1: Defaults")
-    print("Create Transposition Cipher object (with defaults)")
-    cipher = Transposition()
 
-    print(plaintext)
+    print("Run Test Suite")
+    print("==============")
+    tests = {
+        'a: defaults': {},
+        'b: num_rails only (4)': {'num_rails': 4},
+        'c: grouping only (none)': {'grouping': 0},
+        'd: grouping only (3)': {'grouping': 3},
+        'e: num_rails (4) and grouping (3)': {'num_rails': 4,
+                                              'grouping': 3}
+    }
+    
+    test_sets = [
+        'the quick brown fox jumps over the lazy dog',
+        'numb3r5 and punctuat!0n',
+        'Hello Peers'
+    ]
 
-    print('encrypt plaintext')
-    ciphertext = cipher.encrypt(plaintext)
-    print(ciphertext)
-
-    print('decrypt {}'.format(ciphertext))
-    plaintext = cipher.decrypt(ciphertext)
-    print("decrypted: {}".format(plaintext))
-
-    print("Test 2: Custom number of rails (4)")
-    custom_num_rails = 4
-    print("Create Transposition Cipher object")
-    cipher = Transposition(num_rails=4)
-
-    print(plaintext)
-
-    print('encrypt plaintext')
-    ciphertext = cipher.encrypt(plaintext)
-    print(ciphertext)
-
-    print('decrypt {}'.format(ciphertext))
-    plaintext = cipher.decrypt(ciphertext)
-    print("decrypted: {}".format(plaintext))
-
-    print("Test 3: custom grouping (4)")
-    custom_grouping = 4
-    print("Create Transposition Cipher object")
-    cipher = Transposition(grouping=custom_grouping)
-
-    print(plaintext)
-
-    print('encrypt plaintext')
-    ciphertext = cipher.encrypt(plaintext)
-    print(ciphertext)
-
-    print('decrypt {}'.format(ciphertext))
-    plaintext = cipher.decrypt(ciphertext)
-    print("decrypted: {}".format(plaintext))
-
-    print("Test 4: custom grouping (no grouping)")
-    custom_grouping = 0
-    print("Create Transposition Cipher object")
-    cipher = Transposition(grouping=custom_grouping)
-
-    print(plaintext)
-
-    print('encrypt plaintext')
-    ciphertext = cipher.encrypt(plaintext)
-    print(ciphertext)
-
-    print('decrypt {}'.format(ciphertext))
-    plaintext = cipher.decrypt(ciphertext)
-    print("decrypted: {}".format(plaintext))
+    for i in range(len(test_sets)):
+        print("\nTest set {}:".format(i + 1))
+        print("-----------")
+        plaintext = test_sets[i]
+        run_tests(Transposition, plaintext, tests)
