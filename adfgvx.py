@@ -23,37 +23,25 @@ class Adfgvx(Cipher):
     def encrypt(self, plaintext):
         '''Takes a string and returns an encrypted string
         '''
-        print(plaintext)
         # get the (A,D) (F,G) etc ciphertext using the custom polybius
-        print("creating polybius square output...")
         self.polybius_text = self.polybius_cipher.encrypt(plaintext)
-        print(self.polybius_text)
         
         # create keyphrase columns and take each character from the
         # polybius_text and put it into keyphrase_columns
-        print('create and populate keyphrase columns...')
         self._populate_keyphrase_columns()
-        print(self.keyphrase_columns)
-
+        
         # sort the columns alphabetically
-        print('sort the columns...')
         self.keyphrase_columns.sort()
-        print(self.keyphrase_columns)
-
+        
         # take the letters from the columns and create a single long list
         # of characters
-        print("Take letters from columns and turn into character sequence...")
         ciphertext = ""
         for column in self.keyphrase_columns:
             for character in column[1:]:
-                print(character)
                 ciphertext += character
-        print(ciphertext)
-
+        
         # perform grouping
-        print('grouping...')
         grouped_text = self._group_text(ciphertext)
-        print(grouped_text)
         return grouped_text
 
     def decrypt(self, ciphertext):
@@ -61,8 +49,6 @@ class Adfgvx(Cipher):
         '''
         # ungroup text
         ungrouped_text = self._ungroup_text(ciphertext)
-        print("ungrouping text")
-        print("{} -> {}".format(ciphertext, ungrouped_text))
         # create sorted columns
         columns = self._create_cols_kp_chars(self.keyphrase)
         sorted_columns = sorted(columns)
@@ -117,7 +103,6 @@ class Adfgvx(Cipher):
                 next_value = unsorted_columns[column_index + 1][row_index]
             right = next_value
             pair = (left, right)
-            print(pair)
             pairs.append(pair)
             if column_index + 2 > len(unsorted_columns) - 1:
                 row_index += 1
@@ -210,69 +195,39 @@ class Adfgvx(Cipher):
 # ----------------------------------------------------------------------
 
 if __name__ == "__main__":
-    print("Run tests")
+    
+    def run_tests(cipher_class, plaintext, tests):
+        for key, value in tests.items():
+            print('\ntest {}'.format(key))
+            kwargs = value
+            cipher = cipher_class(**kwargs)
+            print("encrypting {}:".format(plaintext))
+            encrypted = cipher.encrypt(plaintext)
+            print(encrypted)
+            print("decrypting {}:".format(encrypted))
+            decrypted = cipher.decrypt(encrypted)
+            print(decrypted)
 
-    print("Test 1: Create ADFGVX Cipher object (with defaults)")
-    cipher = Adfgvx()
 
-    print('create plaintext')
-    plaintext = 'Attack at 12:00 AM'
-    print(plaintext)
+    print("Run Test Suite")
+    print("==============")
+    tests = {
+        'a: defaults': {},
+        'b: keyphrase only ("People")': {'keyphrase': 'PEOPLE'},
+        'c: grouping only (none)': {'grouping': 0},
+        'd: grouping only (3)': {'grouping': 3},
+        'e: keyphrase ("PEOPLE") and grouping (3)': {'keyphrase': "PEOPLE",
+                                                     'grouping': 3}
+    }
+    
+    test_sets = [
+        'the quick brown fox jumps over the lazy dog',
+        'numb3r5 and punctuat!0n',
+        'Hello Peers'
+    ]
 
-    print('encrypt plaintext')
-    ciphertext = cipher.encrypt(plaintext)
-
-    print(ciphertext)
-
-    print('decrypting ciphertext')
-    decoded = cipher.decrypt(ciphertext)
-    print(decoded)
-
-    print("Test 2: Create ADFGVX Cipher object")
-    print("with defaults and non-multiple plaintext)")
-    cipher = Adfgvx()
-
-    print('create plaintext')
-    plaintext = 'We attack at 12:00 AM'
-    print(plaintext)
-
-    print('encrypt plaintext')
-    ciphertext = cipher.encrypt(plaintext)
-
-    print(ciphertext)
-
-    print('decrypting ciphertext')
-    decoded = cipher.decrypt(ciphertext)
-    print(decoded)
-
-    print("Test 3: Create ADFGVX Cipher object (with custom key)")
-    cipher = Adfgvx(keyphrase='HAS REPEATS')
-
-    print('create plaintext')
-    plaintext = 'We attack at 12:00 AM'
-    print(plaintext)
-
-    print('encrypt plaintext')
-    ciphertext = cipher.encrypt(plaintext)
-
-    print(ciphertext)
-
-    print('decrypting ciphertext')
-    decoded = cipher.decrypt(ciphertext)
-    print(decoded)
-
-    print("Test 4: Create ADFGVX Cipher object (with custom grouping)")
-    cipher = Adfgvx(grouping=4)
-
-    print('create plaintext')
-    plaintext = 'We attack at 12:00 AM'
-    print(plaintext)
-
-    print('encrypt plaintext')
-    ciphertext = cipher.encrypt(plaintext)
-
-    print(ciphertext)
-
-    print('decrypting ciphertext')
-    decoded = cipher.decrypt(ciphertext)
-    print(decoded)
+    for i in range(len(test_sets)):
+        print("\nTest set {}:".format(i + 1))
+        print("-----------")
+        plaintext = test_sets[i]
+        run_tests(Adfgvx, plaintext, tests)
