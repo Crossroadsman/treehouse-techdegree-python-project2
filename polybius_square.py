@@ -35,10 +35,14 @@ class PolybiusSquare(Cipher):
             raise ValueError("Size must be no larger than 6")
 
         #   shared_character
-        if size == 5 and shared_character.lower() not in ['c', 'k', 'i', 'j']:
-            error_text = ("Only shared characters of 'i'/'j' or 'c'/'k' "
-                          "are permitted")
-            raise ValueError(error_text)
+        if size == 5:
+            if shared_character is None:
+                error_text = ("When size=5, shared_character must not be None")
+                raise ValueError(error_text)
+            elif shared_character.lower() not in ['c', 'k', 'i', 'j']:
+                error_text = ("When size=5, shared_character must be one of"
+                              "the following: 'c', 'k', 'i', 'j'")
+                raise ValueError(error_text)
 
         if custom_square:
             self.shared_character = None
@@ -46,17 +50,28 @@ class PolybiusSquare(Cipher):
             self.row_ids = custom_square['row_ids']
             self.square = custom_square['square']
             if len(self.square) > 5:
-                self.VALID_CHARACTERS += ['0', '1', '2', '3', '4', '5', '6',
-                                          '7', '8', '9']
+                self.VALID_CHARACTERS = [
+                    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+                    'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 
+                    's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0',
+                    '1', '2', '3', '4', '5', '6', '7', '8', '9']
         else:
+            self.size = size
             self.column_ids = None
             self.row_ids = None
             if size == 5:
+                self.VALID_CHARACTERS = [
+                    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+                    'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 
+                    's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
                 self.shared_character = shared_character.lower()
             else:
+                self.VALID_CHARACTERS = [
+                    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+                    'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 
+                    's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0',
+                    '1', '2', '3', '4', '5', '6', '7', '8', '9']
                 self.shared_character = None
-                self.VALID_CHARACTERS += ['0', '1', '2', '3', '4', '5', '6',
-                                          '7', '8', '9']
             self.square = self._generate_square()
 
     def encrypt(self, plaintext):
@@ -85,7 +100,7 @@ class PolybiusSquare(Cipher):
         5x5 variants)
         '''
         if self.size == 5:
-            if shared_character.lower() in ['i', 'j']:
+            if self.shared_character.lower() in ['i', 'j']:
                 return [
                     ['a', 'b', 'c', 'd', 'e'],
                     ['f', 'g', 'h', '?', 'k'],
@@ -188,38 +203,39 @@ class PolybiusSquare(Cipher):
 
 if __name__ == "__main__":
 
-    print("Tests:")
-    plaintext = "Surprisingly few discotheques provide jukeboxes"
+    def run_tests(cipher_class, plaintext, tests):
+        for key, value in tests.items():
+            print('\ntest {}'.format(key))
+            kwargs = value
+            cipher = cipher_class(**kwargs)
+            print("encrypting {}:".format(plaintext))
+            encrypted = cipher.encrypt(plaintext)
+            print(encrypted)
+            print("decrypting {}:".format(encrypted))
+            decrypted = cipher.decrypt(encrypted)
+            print(decrypted)
 
-    print("Test 1: defaults")
-    cipher = PolybiusSquare()
 
-    ciphertext = cipher.encrypt(plaintext)
-    print(ciphertext)
+    print("Run Test Suite")
+    print("==============")
+    tests = {
+        'a: defaults': {},
+        'b: size only (6)': {'size': 6},
+        #'c: shared_character only (none)': {'shared_character': None},
+        #'d: shared_character only ("")': {'shared_character': ''},
+        'e: shared_character only ("c")': {'shared_character': 'c'},
+        'g: size (6) and shared_character ("c")': {'size': 6,
+                                                   'shared_character': "c"}
+    }
+    
+    test_sets = [
+        'the quick brown fox jumps over the lazy dog',
+        'numb3r5 and punctuat!0n',
+        'Hello Peers'
+    ]
 
-    print("Decrypting {}".format(ciphertext))
-    decrypted = cipher.decrypt(ciphertext)
-    print(decrypted)
-
-    print("Test 2: size 6")
-    cipher = PolybiusSquare(size=6)
-    plaintext += "1234567890"
-    print(plaintext)
-
-    ciphertext = cipher.encrypt(plaintext)
-    print(ciphertext)
-
-    print("Decrypting {}".format(ciphertext))
-    decrypted = cipher.decrypt(ciphertext)
-    print(decrypted)
-
-    print("Test 3: size=5, shared_character='c'")
-    cipher = PolybiusSquare(size=5, shared_character='c')
-    plaintext = "Surprisingly few discotheques provide jukeboxes"
-
-    ciphertext = cipher.encrypt(plaintext)
-    print(ciphertext)
-
-    print("Decrypting {}".format(ciphertext))
-    decrypted = cipher.decrypt(ciphertext)
-    print(decrypted)
+    for i in range(len(test_sets)):
+        print("\nTest set {}:".format(i + 1))
+        print("-----------")
+        plaintext = test_sets[i]
+        run_tests(PolybiusSquare, plaintext, tests)
