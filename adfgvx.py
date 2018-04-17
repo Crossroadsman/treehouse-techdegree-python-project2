@@ -90,27 +90,20 @@ class Adfgvx(Cipher):
 
         # unsort the columns
         unsorted_columns = self._unsorter(self.keyphrase, sorted_columns)
-        """
-        # create pairs from values in columns
-        pairs = []
+        print('unsorted columns: {}'.format(unsorted_columns))
+        # create text string from values in columns
+        text = ""
         column_index = 0
         row_index = 1
-        while len(pairs) < len(ungrouped_text) / 2:
-            left = unsorted_columns[column_index][row_index]
+        while len(text) < len(ungrouped_text):
+            character = unsorted_columns[column_index][row_index]
+            text += character
             if column_index + 1 > len(unsorted_columns) - 1:
-                next_value = unsorted_columns[0][row_index + 1]
-            else:
-                next_value = unsorted_columns[column_index + 1][row_index]
-            right = next_value
-            pair = (left, right)
-            pairs.append(pair)
-            if column_index + 2 > len(unsorted_columns) - 1:
                 row_index += 1
-            column_index = (column_index + 2) % len(unsorted_columns)
-        """
-        # decode pairs
-        #decoded_text = self.polybius_cipher.decrypt(pairs, use_ids=True)
-        decoded_text = self.polybius_cipher.decrypt(unsorted_columns, use_ids=True)
+            column_index = (column_index + 1) % len(unsorted_columns)
+        
+        # decode text
+        decoded_text = self.polybius_cipher.decrypt(text, use_ids=True)
         return(decoded_text)
 
     # Helper methods

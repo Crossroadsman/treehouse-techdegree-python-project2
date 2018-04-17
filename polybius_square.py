@@ -95,7 +95,7 @@ class PolybiusSquare(Cipher):
         pairs = self._pair_array(ungrouped)
         plaintext = ""
         for (row, col) in pairs:
-            plaintext += self._decode_character(int(row), int(col), use_ids)
+            plaintext += self._decode_character(row, col, use_ids)
         plaintext = self._replace_unknowns(plaintext)
         return plaintext
 
@@ -161,8 +161,8 @@ class PolybiusSquare(Cipher):
             row_index = self.row_ids.index(row)
             col_index = self.column_ids.index(col)
         else:
-            row_index = row
-            col_index = col
+            row_index = int(row)
+            col_index = int(col)
         return self.square[row_index][col_index]
 
     def _combine_characters(self, plaintext):
