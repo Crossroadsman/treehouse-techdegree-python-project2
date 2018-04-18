@@ -58,6 +58,7 @@ class Menu:
             self.process = self._select_process()
             self._create_one_time_pad(self.text)
             self.cipher_arguments = self._configure_arguments()
+            print("cipher arguments: {}".format(self.cipher_arguments))
 
             # create specific cipher
             print("Creating cipher")
@@ -191,7 +192,12 @@ class Menu:
 
     def grouping(self, default_value):
         if self.process == 'd':
-            return ('grouping', 0)
+            print('Are your characters grouped into same-sized chunks?')
+            group = input('[y/N] ')
+            if group.lower() in [' ', 'y', 'yes']:
+                return ('grouping', 1)
+            else:
+                return ('grouping', 0)
         else:
             group = input('\nHow many characters to group by (0 to not group) ')
             if group == '':

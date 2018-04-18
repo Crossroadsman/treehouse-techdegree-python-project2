@@ -15,6 +15,8 @@ class Caesar(Cipher):
         self.grouping = grouping
         if self.grouping != 0:
             self.PASSTHROUGH_CHARACTERS = []
+        else:
+            self.PASSTHROUGH_CHARACTERS = [' ']
 
     def encrypt(self, text):
         # reduce plaintext to valid characters
@@ -35,8 +37,11 @@ class Caesar(Cipher):
 
     def decrypt(self, text):
         output = []
-        self.PASSTHROUGH_CHARACTERS = []
-        text = self._ungroup_text(text)
+        if self.grouping != 0:
+            print("grouping ({}) != 0".format(self.grouping))
+            text = self._ungroup_text(text)
+            print(text)
+        
         text = text.upper()
         for char in text:
             try:
