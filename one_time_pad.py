@@ -22,7 +22,7 @@ class OneTimePad():
                     'pad_numbers': pad_numbers}
 
         # turn comma-separated into list of values
-        pad_numbers = pad_numbers.split(',')
+        pad_numbers = [num.strip() for num in pad_numbers.split(',')]
 
         # try to convert the list elements into ints
         try:

@@ -90,7 +90,6 @@ class Adfgvx(Cipher):
 
         # unsort the columns
         unsorted_columns = self._unsorter(self.keyphrase, sorted_columns)
-        print('unsorted columns: {}'.format(unsorted_columns))
         # create text string from values in columns
         text = ""
         column_index = 0
@@ -101,7 +100,7 @@ class Adfgvx(Cipher):
             if column_index + 1 > len(unsorted_columns) - 1:
                 row_index += 1
             column_index = (column_index + 1) % len(unsorted_columns)
-        
+
         # decode text
         decoded_text = self.polybius_cipher.decrypt(text, use_ids=True)
         return(decoded_text)
@@ -131,10 +130,7 @@ class Adfgvx(Cipher):
         individual characters from cipher pairs
         '''
         self.keyphrase_columns = self._create_cols_kp_chars(self.keyphrase)
-        print('keyphrase columns: ')
-        print(self.keyphrase_columns)
-        print('polybius_text: {}'.format(self.polybius_text))
-        
+
         i = 0
         unique_length = len(self._uniquify_keyphrase(self.keyphrase))
         for character in self.polybius_text:
