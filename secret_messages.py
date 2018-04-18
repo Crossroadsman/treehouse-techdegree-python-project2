@@ -192,7 +192,16 @@ class Menu:
 
     def grouping(self, default_value):
         if self.process == 'd':
-            print('Are your characters grouped into same-sized chunks?')
+            lines = [
+                "\nAre your characters grouped into **same-sized** chunks?",
+                "",
+                "Important: if you are using an algorithm that preserves word",
+                "boundaries when `grouping=0` then enter 'n'. Only enter 'y'",
+                "if spaces are caused by setting the grouping parameter to a",
+                "value other than 0."
+            ]
+            for line in lines:
+                print(line)
             group = input('[y/N] ')
             if group.lower() in [' ', 'y', 'yes']:
                 return ('grouping', 1)
