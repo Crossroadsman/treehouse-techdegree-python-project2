@@ -10,7 +10,6 @@ from one_time_pad import OneTimePad
 class Menu:
     # Methods
     def __init__(self):
-        print('Initialising Menu instance')
 
         # Constants
         self.VALID_CIPHERS = {
@@ -45,35 +44,23 @@ class Menu:
         '''Determines which screens to show the user, what values to prompt
         for and how to pass those values into whichever cipher is chosen
         '''
-        print("Loading menu")
-
         finished = False
-        print("Entering UI loop")
         while not finished:
 
             # Get inputs from user
-            print("Getting inputs")
             self.cipher_id = self._select_cipher()
             self.text = self._get_plaintext()
             self.process = self._select_process()
             self._create_one_time_pad(self.text, self.cipher_id)
             self.cipher_arguments = self._configure_arguments()
-            print("cipher arguments: {}".format(self.cipher_arguments))
 
             # create specific cipher
-            print("Creating cipher")
-            print("ARGS:")
-            for key, value in self.cipher_arguments.items():
-                print("{}: {}".format(key, value))
             self.cipher = self.cipher_id['class'](**self.cipher_arguments)
 
             # set up one time pad (if applicable)
-            print("Creating one-time-pad (if applicable...)")
             if self.process == 'e':
                 if self.pad is not None:
                     if self.pad.pad_numbers is not None:
-                        print("...applicable:")
-                        print(self.pad)
                         self.text = self.pad.apply_one_time_pad(
                             self.text,
                             self.cipher)

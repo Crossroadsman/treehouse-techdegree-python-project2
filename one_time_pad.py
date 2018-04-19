@@ -83,7 +83,6 @@ class OneTimePad():
 
     def _required_pad_length(self, text, cipher_id, encrypt_mode=True):
         '''Determines the minimum required pad length for an algorithm'''
-        print('cipher name: {}'.format(cipher_id['name']))
         if encrypt_mode:
             return len(text)
         else:  # decrypt
