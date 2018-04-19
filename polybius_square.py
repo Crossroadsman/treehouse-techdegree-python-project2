@@ -17,9 +17,12 @@ class PolybiusSquare(Cipher):
     to determine which of the combined characters was used in the original
     plaintext.
 
-    This implementation makes explicit this uncertainty by representing each
-    occurrence of one of these characters in decoded text with both possible
-    characters enclosed in parens.
+    This implementation decodes the ambiguous letters by using the selected
+    shared character in each case.
+    Example:
+    plaintext = 'click clack'
+    shared_character = 'c'
+    decoded plaintext = 'cliccclacc'
     '''
 
     def __init__(self,
@@ -193,12 +196,10 @@ class PolybiusSquare(Cipher):
 
     def _replace_unknowns(self, plaintext):
         '''During the decoding process, we need to replace each occurrence of
-        ? with the possible value pair (if using 5x5 square)
+        ? with the shared_character (if using 5x5 square)
         '''
-        if self.shared_character in ['i', 'j']:
-            substitute = '(i/j)'
-        elif self.shared_character in ['c', 'k']:
-            substitute = '(c/k)'
+        if self.shared_character in ['i', 'j', 'c', 'k']:
+            substitute = self.shared_character
         else:
             return plaintext
         replaced = ""

@@ -224,7 +224,7 @@ class Menu:
         return ('size', grid)
 
     def shared_character(self, default_value):
-        if self.grid:
+        if self.grid_size:
             print("\nChoose a shared character")
             character = input('(valid values are: "c", "k", "i", "j") ')
             return ('shared_character', character)
