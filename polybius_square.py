@@ -22,7 +22,11 @@ class PolybiusSquare(Cipher):
     characters enclosed in parens.
     '''
 
-    def __init__(self, size=5, shared_character='i', custom_square=None, grouping=0):
+    def __init__(self,
+                 size=5,
+                 shared_character='i',
+                 custom_square=None,
+                 grouping=0):
         self.PASSTHROUGH_CHARACTERS = []
         self.grouping = grouping
 
@@ -53,7 +57,7 @@ class PolybiusSquare(Cipher):
             if len(self.square) > 5:
                 self.VALID_CHARACTERS = [
                     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
-                    'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 
+                    'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
                     's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0',
                     '1', '2', '3', '4', '5', '6', '7', '8', '9']
         else:
@@ -63,13 +67,13 @@ class PolybiusSquare(Cipher):
             if size == 5:
                 self.VALID_CHARACTERS = [
                     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
-                    'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 
+                    'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
                     's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
                 self.shared_character = shared_character.lower()
             else:
                 self.VALID_CHARACTERS = [
                     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
-                    'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 
+                    'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
                     's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0',
                     '1', '2', '3', '4', '5', '6', '7', '8', '9']
                 self.shared_character = None
@@ -215,14 +219,14 @@ class PolybiusSquare(Cipher):
         return output_list
 
     def _stringify(self, list):
-        '''takes a list that contains non-string elements and joins them into a 
+        '''takes a list that contains non-string elements and joins them into a
         single string
         '''
         return "".join([str(elem) for elem in list])
 
     def _pair_array(self, text):
         '''takes a string and outputs a list of pairs'''
-        return [(odd, even) for (odd, even) in zip(text[::2],text[1::2])]
+        return [(odd, even) for (odd, even) in zip(text[::2], text[1::2])]
 
 # -----------------------------------------------------------------
 
@@ -240,14 +244,13 @@ if __name__ == "__main__":
             decrypted = cipher.decrypt(encrypted)
             print(decrypted)
 
-
     print("Run Test Suite")
     print("==============")
     tests = {
         'a: defaults': {},
         'b: size only (6)': {'size': 6},
-        #'c: shared_character only (none)': {'shared_character': None},
-        #'d: shared_character only ("")': {'shared_character': ''},
+        # 'c: shared_character only (none)': {'shared_character': None},
+        # 'd: shared_character only ("")': {'shared_character': ''},
         'e: shared_character only ("c")': {'shared_character': 'c'},
         'f: grouping only (5)': {'grouping': 5},
         'g: size (6) and shared_character ("c")': {'size': 6,
@@ -255,7 +258,7 @@ if __name__ == "__main__":
         'h: size (6) and grouping (5)': {'size': 6,
                                          'grouping': 5}
     }
-    
+
     test_sets = [
         'the quick brown fox jumps over the lazy dog',
         'numb3r5 and punctuat!0n',

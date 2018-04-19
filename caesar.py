@@ -41,7 +41,7 @@ class Caesar(Cipher):
             print("grouping ({}) != 0".format(self.grouping))
             text = self._ungroup_text(text)
             print(text)
-        
+
         text = text.upper()
         for char in text:
             try:

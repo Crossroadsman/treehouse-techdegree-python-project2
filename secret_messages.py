@@ -109,11 +109,11 @@ class Menu:
         cipher_choice = input("\nWhich cipher would you like to use? ").lower()
         print("you choice: {}".format(cipher_choice))
         while cipher_choice not in self.VALID_CIPHERS.keys():
-            print("I'm sorry, I didn't recognise that choice. Please try again.")
+            print("I'm sorry, I didn't recognise that choice. Try again.")
             print("Valid choices are: ")
             for letter in self.VALID_CIPHERS.keys():
                 print(letter)
-            cipher_choice = input("Which cipher would you like to use? ").lower()
+            cipher_choice = input("Which cipher will you use? ").lower()
         return self.VALID_CIPHERS[cipher_choice]
 
     def _get_plaintext(self):
@@ -133,7 +133,7 @@ class Menu:
         process = input("Which process do you want to use? ")
 
         while process not in self.VALID_ACTIVITIES.keys():
-            print("I'm sorry, I didn't recognise that choice. Please try again.")
+            print("I'm sorry, I didn't recognise that choice. Try again.")
             print("Valid choices are: ")
             for letter in self.VALID_ACTIVITIES.keys():
                 print(letter)
@@ -148,13 +148,16 @@ class Menu:
         line2 = 'Pad values must be:\n'
         line3 = '- a comma-separated sequence of integers, and\n'
         line4 = '- at least as long as the text to be encrypted.\n'
-        line5 = 'e.g., if encrypting "Hello", 3,4,17,2,6,9 would be a valid pad: '
+        line5 = 'e.g., for "Hello", 3,4,17,2,6,9 would be a valid pad: '
         pad_text = line1 + line2 + line3 + line4 + line5
         pad_numbers = input(pad_text)
         if input == "":
             self.pad = None
         else:
-            self.pad = OneTimePad(pad_numbers, plaintext, cipher_id, self.process)
+            self.pad = OneTimePad(pad_numbers,
+                                  plaintext,
+                                  cipher_id,
+                                  self.process)
             while self.pad.error is not None:
                 print('Your supplied pad value was invalid:')
                 print(self.pad.error)
@@ -176,7 +179,8 @@ class Menu:
 
     def offset(self, default_value):
         print("\nChoose an offset value")
-        offset_value = input('Or leave blank for default ({}) '.format(default_value))
+        input_text = 'Or leave blank for default ({}) '.format(default_value)
+        offset_value = input(input_text)
         if offset_value == '':
             return ('offset', default_value)
         else:
@@ -208,7 +212,8 @@ class Menu:
             else:
                 return ('grouping', 0)
         else:
-            group = input('\nHow many characters to group by (0 to not group) ')
+            print("")
+            group = input('How many characters to group by (0 to not group) ')
             if group == '':
                 group = 0
             try:
@@ -219,7 +224,8 @@ class Menu:
 
     def keyphrase(self, default_value):
         print("\nChoose a keyphrase ")
-        phrase = input('Or leave blank for default ({}) '.format(default_value))
+        input_text = 'Or leave blank for default ({}) '.format(default_value)
+        phrase = input(input_text)
         if phrase == '':
             return ('keyphrase', default_value)
         else:
