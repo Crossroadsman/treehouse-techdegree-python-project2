@@ -219,15 +219,28 @@ class Menu:
             return ('keyphrase', phrase)
 
     def size(self, default_value):
-        grid = int(input('\n Choose a square size (valid values are 5 or 6) '))
+        '''Note that only size=6 is compatible with using a one time pad
+        (this is because the pad obfuscates the underlying character values
+        and the encryption algorithm has no way of telling which padded
+        characters were the shared character). Consequently, if one time pad
+        is used, size=6 is chosen automatically. To use size=5, you must
+        choose not to use a one time pad
+        '''
+        if self.pad.pad_numbers is not None:
+            grid = 6
+        else:
+            input_text = '\n Choose a square size (valid values are 5 or 6) '
+            grid = int(input(input_text))
         self.grid_size = grid
         return ('size', grid)
 
     def shared_character(self, default_value):
-        if self.grid_size:
+        if self.grid_size == 5:
             print("\nChoose a shared character")
             character = input('(valid values are: "c", "k", "i", "j") ')
             return ('shared_character', character)
+        else:
+            return ('shared_character', 'c')
 
 # ---------------------------------------------------------------
 
