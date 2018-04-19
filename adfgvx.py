@@ -19,6 +19,7 @@ class Adfgvx(Cipher):
         self.keyphrase = keyphrase
         self.grouping = grouping
         self._create_polybius_square_cipher()
+        self.PASSTHROUGH_CHARACTERS = []
 
     def encrypt(self, plaintext):
         '''Takes a string and returns an encrypted string
@@ -179,7 +180,7 @@ class Adfgvx(Cipher):
     # Dunder methods
     def __repr__(self):
         text = "ADFGVX Cipher (keyphrase: {}, grouping: {})"
-        print(text.format(self.keyphrase, self.grouping))
+        return text.format(self.keyphrase, self.grouping)
 
 # ----------------------------------------------------------------------
 

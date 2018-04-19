@@ -1,11 +1,11 @@
 class OneTimePad():
 
-    def __init__(self, pad_numbers, plaintext):
-        validated = self._validate_pad(pad_numbers, len(plaintext))
+    def __init__(self, pad_numbers, plaintext, cipher_id, process):
+        validated = self._validate_pad(pad_numbers, plaintext, cipher_id, process)
         self.error = validated['error']
         self.pad_numbers = validated['pad_numbers']
     
-    def _validate_pad(self, pad_numbers, min_length):
+    def _validate_pad(self, pad_numbers, text, cipher_id, process):
         '''takes a user-supplied prospective one-time pad and determines its
         validity.
         Returns a dictionary with two keys, `error` and `pad_numbers`.
@@ -34,6 +34,11 @@ class OneTimePad():
                     'pad_numbers': pad_numbers}
 
         # check the length is sufficient
+        if process == 'e':
+            min_length = self._required_pad_length(text, cipher_id)
+        else:
+            min_length = self._required_pad_length(text, cipher_id, False)
+        
         if len(pad_numbers) < min_length:
             error = 'Too short, pad must be at least as long as plaintext'
             pad_numbers = None
@@ -52,7 +57,9 @@ class OneTimePad():
         pad applied (forward if encrypting, backward if decrypting)
         '''
         valid_characters_and_spaces = cipher._reduce_characters(plaintext)
+        
         altered_plaintext = ""
+        
         numchars = len(valid_characters_and_spaces)
         numvalid = len(cipher.VALID_CHARACTERS)
 
@@ -69,6 +76,18 @@ class OneTimePad():
                 altered_plaintext += character
                 
         return altered_plaintext
+    
+    def _required_pad_length(self, text, cipher_id, encrypt_mode=True):
+        '''Determines the minimum required pad length for an algorithm'''
+        print('cipher name: {}'.format(cipher_id['name']))
+        if encrypt_mode:
+            return len(text)
+        else: # decrypt
+            if cipher_id['name'] in ['ADFGVX', 'Polybius Square']:
+                return (len(text) + 1) // 2
+            else:
+                return len(text)
+
 
     def __repr__(self):
         if self.error is not None:

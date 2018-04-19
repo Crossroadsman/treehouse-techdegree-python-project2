@@ -56,7 +56,7 @@ class Menu:
             self.cipher_id = self._select_cipher()
             self.text = self._get_plaintext()
             self.process = self._select_process()
-            self._create_one_time_pad(self.text)
+            self._create_one_time_pad(self.text, self.cipher_id)
             self.cipher_arguments = self._configure_arguments()
             print("cipher arguments: {}".format(self.cipher_arguments))
 
@@ -140,7 +140,7 @@ class Menu:
             process = input("Which process do you want to use? ")
         return process
 
-    def _create_one_time_pad(self, plaintext):
+    def _create_one_time_pad(self, plaintext, cipher_id):
         '''ask the user if they want to use a one-time pad.
         if so, get the value and validate it
         '''
@@ -154,13 +154,13 @@ class Menu:
         if input == "":
             self.pad = None
         else:
-            self.pad = OneTimePad(pad_numbers, plaintext)
+            self.pad = OneTimePad(pad_numbers, plaintext, cipher_id, self.process)
             while self.pad.error is not None:
                 print('Your supplied pad value was invalid:')
                 print(self.pad.error)
                 print('Please try again.')
                 pad_numbers = input(pad_text)
-                self.pad = OneTimePad(pad_numbers, plaintext)
+                self.pad = OneTimePad(pad_numbers, plaintext, cipher_id)
 
     # Functions: Cipher Arguments
     def _configure_arguments(self):
